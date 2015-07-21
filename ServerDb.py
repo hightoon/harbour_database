@@ -4,10 +4,10 @@
   description:
 '''
 
-import cx_Oracle
+import cx_Oracle, socket
 
 dbconn = None
-DB_URL = '10.140.163.132/XE'
+DB_URL = socket.gethostbyname(socket.gethostname()) + '/XE'
 
 def connect_orclex(usr, passwd, url):
   return cx_Oracle.connect(usr, passwd, url)
