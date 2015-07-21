@@ -30,7 +30,7 @@ def execute_sql(sql):
   if dbconn is not None:
     cur = dbconn.cursor()
     try:
-      cur.execute(sql)
+    	cur.execute(sql)
       dbconn.commit()
     except cx_Oracle.DatabaseError as e:
       print e
