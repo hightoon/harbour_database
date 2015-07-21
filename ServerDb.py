@@ -223,6 +223,9 @@ def create_driver_info_table():
 def drop_driver_info_table():
   execute_sql('drop table driverinfo')
 
+def create_veh_drvr_rel_table():
+	
+
 def init_db():
   create_vehicle_info_table()
   create_driver_info_table()
