@@ -858,6 +858,64 @@ def create_temp_passport_table():
 def drop_temp_passport_table():
   execute_sql('drop table temp_passport_table;')
 
+def create_table_space(spname):
+  #execute_sql('')
+
+def create_driver_rec_table():
+  sql = '''
+    CREATE TABLE driver_rec_table
+    ( NAME VARCHAR2(10 BYTE)  NOT NULL
+    , CAT VARCHAR2(20 BYTE)  NOT NULL
+    , ID VARCHAR2(20 BYTE)  NOT NULL CONSTRAINT id_pk PRIMARY KEY
+    , VCHL VARCHAR2(20 BYTE)
+    , DATE VARCHAR2(20 BYTE)
+    , HARBOUR VARCHAR2(15 BYTE)
+    , DIRCT VARCHAR2(15 BYTE)
+    , PIC VARCHAR2(20 BYTE)
+    )
+    PCTUSED    40
+    PCTFREE    10
+    STORAGE    (
+                INITIAL          132K
+                MINEXTENTS       2
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+                BUFFER_POOL      DEFAULT
+               )
+  '''
+  execute_sql(sql)
+
+def drop_driver_rec_table():
+  execute_sql('drop table driver_rec_table')
+
+def create_vechicle_rec_table():
+  sql = '''
+    CREATE TABLE vech_rec_table
+    ( PLATE VARCHAR2(10 BYTE)  NOT NULL CONSTRAINT id_pk PRIMARY KEY
+    , COMPANY VARCHAR2(20 BYTE)  NOT NULL
+    , DRIVER VARCHAR2(20 BYTE)  NOT NULL
+    , IDTYPE VARCHAR2(10 BYTE)
+    , IDNUM VARCHAR2(20 BYTE)
+    , DATE VARCHAR2(20 BYTE)
+    , HARBOUR VARCHAR2(15 BYTE)
+    , DIRCT VARCHAR2(15 BYTE)
+    , PIC VARCHAR2(30 BYTE)
+    )
+    PCTUSED    40
+    PCTFREE    10
+    STORAGE    (
+                INITIAL          132K
+                MINEXTENTS       2
+                MAXEXTENTS       UNLIMITED
+                PCTINCREASE      0
+                BUFFER_POOL      DEFAULT
+               )
+  '''
+  execute_sql(sql)
+
+def drop_vehicle_rec_table():
+  execute_sql('drop table vech_rec_table')
+
 def init_db():
   create_vehicle_info_table()
   create_driver_info_table()
@@ -867,6 +925,8 @@ def init_db():
   create_shp_lcc_info_table()
   create_crew_info_table()
   create_temp_passport_table()
+  create_driver_rec_table()
+  create_vechicle_rec_table()
 
 def main():
   global dbconn
