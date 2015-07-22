@@ -5,6 +5,7 @@
 '''
 
 import cx_Oracle, socket
+from SqlCmdHelper import sql_cmds
 
 dbconn = None
 DB_URL = socket.gethostbyname(socket.gethostname()) + '/XE'
@@ -114,7 +115,7 @@ def create_vehicle_info_table():
       SD      VARCHAR2(100 BYTE)
     )
   '''
-  execute_sql(sql)
+  execute_sql(sql_cmds['create_vehicle_info_table'])
 
 def drop_vehicle_info_table():
   execute_sql('drop table vehicleinfo')
@@ -219,7 +220,7 @@ def create_driver_info_table():
       PRIMARY KEY (ZJHM, ZJLBDM, GJDQDM)
     )
   '''
-  execute_sql(sql)
+  execute_sql(sql_cmds['create_driver_info_table'])
 
 def drop_driver_info_table():
   execute_sql('drop table driverinfo')
@@ -248,7 +249,7 @@ def create_veh_drvr_rel_table():
       FSJXX      VARCHAR2(300 BYTE)
     )
   '''
-  execute_sql(sql)
+  execute_sql(sql_cmds['create_veh_drvr_rel_table'])
 
 def drop_vdr_table():
   execute_sql('drop table vhl_drvr_relat')
@@ -373,6 +374,7 @@ def create_cruise_ship_table():
     NOPARALLEL
     NOMONITORING
   '''
+  execute_sql(sql_cmds['create_cruise_ship_table'])
 
 def drop_crs_shp_table():
   execute_sql('drop table crs_shp_table')
@@ -439,7 +441,7 @@ def create_company_table():
     NOPARALLEL
     NOMONITORING
   '''
-  execute_sql(sql)
+  execute_sql(sql_cmds['create_company_table'])
 
 def drop_company_table():
   execute_sql('drop table company_table')
@@ -601,7 +603,7 @@ def create_shp_lcc_info_table():
     NOPARALLEL
     NOMONITORING
   '''
-  execute_sql(sql)
+  execute_sql(sql_cmds['create_shp_lcc_info_table'])
 
 def drop_shp_lcc_info_table():
   execute_sql('drop table shp_lcc_info_table')
@@ -772,7 +774,7 @@ def create_crew_info_table():
     NOPARALLEL
     NOMONITORING
   '''
-  execute_sql(sql)
+  execute_sql(sql_cmds['create_crew_info_table'])
 
 def drop_crew_info_table():
   execute_sql('drop table crew_info_table;')
@@ -853,37 +855,29 @@ def create_temp_passport_table():
     NOPARALLEL
     NOMONITORING
   '''
-  execute_sql(sql)
+  execute_sql(sql_cmds['create_temp_passport_table'])
 
 def drop_temp_passport_table():
   execute_sql('drop table temp_passport_table;')
 
 def create_table_space(spname):
   #execute_sql('')
-
+	pass
+	
 def create_driver_rec_table():
   sql = '''
     CREATE TABLE driver_rec_table
-    ( NAME VARCHAR2(10 BYTE)  NOT NULL
-    , CAT VARCHAR2(20 BYTE)  NOT NULL
-    , ID VARCHAR2(20 BYTE)  NOT NULL CONSTRAINT id_pk PRIMARY KEY
-    , VCHL VARCHAR2(20 BYTE)
-    , DATE VARCHAR2(20 BYTE)
-    , HARBOUR VARCHAR2(15 BYTE)
+    ( DN	 	VARCHAR2(10 BYTE)  NOT NULL
+    , CAT 	VARCHAR2(20 BYTE)  NOT NULL
+    , ID 		VARCHAR2(20 BYTE)  NOT NULL CONSTRAINT id_pk PRIMARY KEY
+    , VCHL 	VARCHAR2(20 BYTE)
+    , DT	 	VARCHAR2(20 BYTE)
+    , HAR		VARCHAR2(15 BYTE)
     , DIRCT VARCHAR2(15 BYTE)
-    , PIC VARCHAR2(20 BYTE)
+    , PIC 	VARCHAR2(20 BYTE)
     )
-    PCTUSED    40
-    PCTFREE    10
-    STORAGE    (
-                INITIAL          132K
-                MINEXTENTS       2
-                MAXEXTENTS       UNLIMITED
-                PCTINCREASE      0
-                BUFFER_POOL      DEFAULT
-               )
   '''
-  execute_sql(sql)
+  execute_sql(sql_cmds['create_driver_rec_table'])
 
 def drop_driver_rec_table():
   execute_sql('drop table driver_rec_table')
@@ -891,27 +885,18 @@ def drop_driver_rec_table():
 def create_vechicle_rec_table():
   sql = '''
     CREATE TABLE vech_rec_table
-    ( PLATE VARCHAR2(10 BYTE)  NOT NULL CONSTRAINT id_pk PRIMARY KEY
+    ( PLATE 	VARCHAR2(10 BYTE)  NOT NULL
     , COMPANY VARCHAR2(20 BYTE)  NOT NULL
-    , DRIVER VARCHAR2(20 BYTE)  NOT NULL
-    , IDTYPE VARCHAR2(10 BYTE)
-    , IDNUM VARCHAR2(20 BYTE)
-    , DATE VARCHAR2(20 BYTE)
+    , DRIVER 	VARCHAR2(20 BYTE)  NOT NULL
+    , IDTYPE 	VARCHAR2(10 BYTE)
+    , IDNUM 	VARCHAR2(20 BYTE)
+    , DT	 		VARCHAR2(20 BYTE)
     , HARBOUR VARCHAR2(15 BYTE)
-    , DIRCT VARCHAR2(15 BYTE)
-    , PIC VARCHAR2(30 BYTE)
+    , DIRCT 	VARCHAR2(15 BYTE)
+    , PIC 		VARCHAR2(30 BYTE)
     )
-    PCTUSED    40
-    PCTFREE    10
-    STORAGE    (
-                INITIAL          132K
-                MINEXTENTS       2
-                MAXEXTENTS       UNLIMITED
-                PCTINCREASE      0
-                BUFFER_POOL      DEFAULT
-               )
   '''
-  execute_sql(sql)
+  execute_sql(sql_cmds['create_vechicle_rec_table'])
 
 def drop_vehicle_rec_table():
   execute_sql('drop table vech_rec_table')
