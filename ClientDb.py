@@ -14,7 +14,7 @@ from SqlCmdHelper import sqlite_cmds
 
 rec_db = None
 
-def connect(dbfile='records.db'):
+def connect(dbfile='clientDb.db'):
   return sqlite3.connect(dbfile)
 
 def create_table(tabname, tabfmt):
