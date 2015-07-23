@@ -93,9 +93,8 @@ def drop_all():
 def main():
   if rec_db is None:
     db_init()
-    drop_all()
-  #while True:
-  #  pass
+  while True:
+    pass
 
 def main_test():
   if rec_db is None:

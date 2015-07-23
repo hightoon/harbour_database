@@ -4,7 +4,7 @@
   description: handle DB operation on server side
 '''
 
-import cx_Oracle, socket
+import cx_Oracle, socket, SocketServer
 from SqlCmdHelper import sql_cmds
 
 dbconn = None
@@ -113,6 +113,9 @@ def init_db():
   create_driver_rec_table()
   create_vechicle_rec_table()
 
+def create_all_tables():
+  print globals().update(locals()).get('create_vehicle_info_table')
+
 def main():
   global dbconn
   if dbconn is None:
@@ -126,5 +129,7 @@ def main():
   print res.fetchone()
   cur.close()
   dbconn.close()
+  while True:
+    pass
 
 main()
