@@ -10,13 +10,6 @@ from SqlCmdHelper import sql_cmds
 dbconn = None
 DB_URL = socket.gethostbyname(socket.gethostname()) + '/XE'
 
-class SvrSockSvr(SocketServer.BaseRequestHandler):
-  def handle(self):
-    # self.request is the TCP socket connected to the client
-    self.data = self.request.recv(1024).strip()
-    print "{} wrote:".format(self.client_address[0])
-    print self.data
-
 def connect_orclex(usr, passwd, url):
   return cx_Oracle.connect(usr, passwd, url)
 
@@ -42,7 +35,7 @@ def execute_sql(sql):
       dbconn.commit()
     except cx_Oracle.DatabaseError as e:
       print e
-    cur.close()
+    return cur
 
 def create_vehicle_info_table():
   execute_sql(sql_cmds['create_vehicle_info_table'])
@@ -123,8 +116,27 @@ def init_db():
 def create_all_tables():
   print globals().update(locals()).get('create_vehicle_info_table')
 
+class SvrSockSvr(SocketServer.BaseRequestHandler):
+  def handle(self):
+    # self.request is the TCP socket connected to the client
+    self.data = self.request.recv(1024).strip().decode('utf-8')
+    print "{} wrote:".format(self.client_address[0])
+    print self.data
+    self._process_data()
+
+  def _process_data(self):
+    if self.data.startswith('sql:'):
+      sql = self.data[4:].strip()
+      c = execute_sql(sql)
+      if sql.startswith('SELECT'):
+        for res in c:
+          print res
+      c.close()
+      
+
 def run_sock_svr():
   HOST, PORT = socket.gethostbyname(socket.gethostname()), 9999
+  print HOST, PORT
   server = SocketServer.TCPServer((HOST, PORT), SvrSockSvr)
   server.serve_forever()
 
@@ -132,16 +144,10 @@ def main():
   global dbconn
   if dbconn is None:
     dbconn = connect_orclex('haitong', '111111', DB_URL)
-  print dbconn.version
+  #print dbconn.version
   #drop_vehicle_info_table()
   #drop_driver_info_table()
   init_db()
-  cur = dbconn.cursor()
-  res = cur.execute('SELECT ZJBH from temp_passport_table')
-  print res.fetchone()
-  cur.close()
-  dbconn.close()
-  while True:
-    pass
+  run_sock_svr()
 
 main()
