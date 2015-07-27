@@ -1089,7 +1089,7 @@ sqlite_cmds = {
   )
   ''',
 
-  'vehicle_rec_table':\
+  'driver_rec_table':\
   '''
   ( name text
   , cat text
@@ -1102,7 +1102,7 @@ sqlite_cmds = {
   )
   ''',
 
-  'driver_rec_table':\
+  'vehicle_rec_table':\
   '''
   ( plate text
   , company text

@@ -116,7 +116,7 @@ def init_db():
 def create_all_tables():
   print globals().update(locals()).get('create_vehicle_info_table')
 
-class SvrSockSvr(SocketServer.BaseRequestHandler):
+class SqlSockSvr(SocketServer.BaseRequestHandler):
   def handle(self):
     # self.request is the TCP socket connected to the client
     self.data = self.request.recv(1024).strip().decode('utf-8')
@@ -132,12 +132,12 @@ class SvrSockSvr(SocketServer.BaseRequestHandler):
         for res in c:
           print res
       c.close()
-      
+
 
 def run_sock_svr():
   HOST, PORT = socket.gethostbyname(socket.gethostname()), 9999
   print HOST, PORT
-  server = SocketServer.TCPServer((HOST, PORT), SvrSockSvr)
+  server = SocketServer.TCPServer((HOST, PORT), SqlSockSvr)
   server.serve_forever()
 
 def main():
@@ -150,4 +150,6 @@ def main():
   init_db()
   run_sock_svr()
 
-main()
+
+if __name__ == '__main__':
+  main()
