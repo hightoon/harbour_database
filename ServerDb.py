@@ -10,6 +10,13 @@ from SqlCmdHelper import sql_cmds
 dbconn = None
 DB_URL = socket.gethostbyname(socket.gethostname()) + '/XE'
 
+class SvrSockSvr(SocketServer.BaseRequestHandler):
+  def handle(self):
+    # self.request is the TCP socket connected to the client
+    self.data = self.request.recv(1024).strip()
+    print "{} wrote:".format(self.client_address[0])
+    print self.data
+
 def connect_orclex(usr, passwd, url):
   return cx_Oracle.connect(usr, passwd, url)
 
@@ -115,6 +122,11 @@ def init_db():
 
 def create_all_tables():
   print globals().update(locals()).get('create_vehicle_info_table')
+
+def run_sock_svr():
+  HOST, PORT = socket.gethostbyname(socket.gethostname()), 9999
+  server = SocketServer.TCPServer((HOST, PORT), SvrSockSvr)
+  server.serve_forever()
 
 def main():
   global dbconn

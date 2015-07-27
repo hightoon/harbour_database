@@ -8,11 +8,18 @@
                to be restore to sql server db.
 '''
 
-import sqlite3
+import sqlite3, socket, SocketServer
 from datetime import datetime
 from SqlCmdHelper import sqlite_cmds
 
 rec_db = None
+
+class ClientSockSvr(SocketServer.BaseRequestHandler):
+  def handle(self):
+    # self.request is the TCP socket connected to the client
+    self.data = self.request.recv(1024).strip()
+    print "{} wrote:".format(self.client_address[0])
+    print self.data
 
 def connect(dbfile='clientDb.db'):
   return sqlite3.connect(dbfile)
@@ -90,11 +97,15 @@ def drop_all():
   for tn in sqlite_cmds.keys():
     drop_table(tn)
 
+def run_sock_svr():
+  HOST, PORT = socket.gethostbyname(socket.gethostname()), 9998
+  server = SocketServer.TCPServer((HOST, PORT), ClientSockSvr)
+  server.serve_forever()
+
 def main():
   if rec_db is None:
     db_init()
-  while True:
-    pass
+  run_sock_svr()
 
 def main_test():
   if rec_db is None:
