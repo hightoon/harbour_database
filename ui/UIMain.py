@@ -94,6 +94,14 @@ def add_company():
 def add_company():
   print 'add company'
 
+@route('/ships')
+def add_ship():
+  return template('./view/ship.tpl')
+
+@route('/add_ship', method='POST')
+def add_ship():
+  print 'add ship'
+
 @route('/static/<filename:path>')
 def send_static(filename):
   return static_file(filename, root='./')
