@@ -9,6 +9,7 @@ sys.path.append('..')
 
 import time, urllib2, sqlite3
 #import ServerDb as sdb
+import SqlCmdHelper
 from datetime import datetime
 from subprocess import Popen
 from bottle import route, request, redirect, template,static_file, run
@@ -74,7 +75,7 @@ def add_vehicle():
   bz = request.forms.get('bz')
   pd = request.forms.get('pd')
   sd = request.forms.get('sd')
-  print wycph, gsqc, jwcph, jncph, ssgjdm
+
   #sdb.execute_sql('''INSERT vehicleinfo ()
   #''')
 
