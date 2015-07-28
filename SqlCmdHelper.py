@@ -511,7 +511,7 @@ sql_cmds = {
       D2ZJHM    VARCHAR2(20 BYTE),
       D2ZJLBDM  VARCHAR2(2 BYTE),
       MZDM      VARCHAR2(2 BYTE),
-      TYBZ      CHAR(1 BYTE)                        DEFAULT '0'                   NOT NULL,
+      TYBZ      CHAR(1 BYTE)                        DEFAULT '0'        NOT NULL,
       CZY       VARCHAR2(8 BYTE)                    NOT NULL,
       CZSJ      VARCHAR2(14 BYTE)                   NOT NULL,
       CZKADM    CHAR(3 BYTE)                        NOT NULL,
@@ -830,6 +830,121 @@ sql_cmds = {
     '''
 }
 
+sql_table_columns = {
+  'vehicleinfo': \
+  '''
+  ( WYCPH
+  , GSQC
+  , JWCPH
+  , JNCPH
+  , SSGJDM
+  , CLLXDM
+  , CLGD
+  , TW
+  , PWYXQ
+  , TXKADM
+  , TXYXQ
+  , SQBH
+  , PWH
+  , KSYS
+  , CTZ
+  , ZZDW
+  , CBDW
+  , CZY
+  , CZSJ
+  , CZKADM
+  , BZ
+  , PD
+  , SD
+  ''',
+
+  'driverinfo': \
+  '''
+  ( ZJHM
+  , ZJLBDM
+  , XM
+  , XBDM
+  , CSRQ
+  , GJDQDM
+  , ZJYXQ
+  , SQBH
+  , ZJQZYXQ
+  , GSQC
+  , QZQZDM
+  , FZJGDM
+  , QZQZYXQ
+  , ICKH
+  , QWGDM
+  , LZGDM
+  , XKZH
+  , SFZH
+  , D2XM
+  , D2CSRQ
+  , D2ZJHM
+  , D2ZJLBDM
+  , MZDM
+  , TYBZ
+  , CZY
+  , CZSJ
+  , CZKADM
+  , BZ
+  , QZH
+  , TLQ)
+  ''',
+
+  'crs_shp_table': \
+  '''
+  ( HC
+  , CBJSBS
+  , CBDH
+  , JTGJLXDM
+  , CBZLDM
+  , ZWCBM
+  , YWCBM
+  , IMO
+  , GJHH
+  , GJDQDM
+  , CYBGBS
+  , ZDGZBS
+  , DQJCFL
+  , DQJCZT
+  , KADM
+  , CZY
+  , CZBM
+  , CZSJ
+  , CJG
+  , DQTKMT
+  , DQTKBW
+  , JDXGZT
+  , JFR
+  , JFSJ
+  , QFR
+  , QFSJ
+  , WQDY
+  , JFKADM
+  , QFKADM
+  , YJBZ
+  , STATUS
+  )
+  ''',
+
+  'company_table': \
+  '''
+  ( GSDM
+  , GSQC
+  , GSJC
+  , LXDM
+  , SSGJ
+  , FZR
+  , YWFW
+  , SYBJ
+  , CZY
+  , CZSJ
+  , CZKADM
+  , BZ
+  )
+  ''',
+}
 
 sqlite_cmds = {
   'vehicle_info_table':\
