@@ -23,7 +23,7 @@
       </div>
       <div id="vehicle-manage-page" class="col-10">
         <h4>车辆管理 >>> 添加司机信息</h4>
-        <form action="/add_vehicle" method="POST">
+        <form action="/add_driver" method="POST">
           <p>
             <label for="tlq">
               <span>停留期: </span>
@@ -143,21 +143,41 @@
             </label>
           </p>
           <p>
-            <label for="xm">
-              <span>姓名: </span>
-              <input type="text" id="xm" name="xm" />
+            <label for="sqbh">
+              <span>申请表号: </span>
+              <input type="text" id="sqbh" name="sqbh" />
             </label>
-            <label for="xbdm">
-              <span>性别: </span>
-              <input type="text" id="xbdm" name="xbdm" />
+            <label for="zjqzyxq">
+              <span>准驾签注有效期: </span>
+              <input type="text" id="zjqzyxq" name="zjqzyxq" />
             </label>
-            <label for="csrq">
-              <span>出生日期: </span>
-              <input type="text" id="csrq" name="csrq" />
+            <label for="gsqc">
+              <span>公司全称: </span>
+              <input type="text" id="gsqc" name="gsqc" />
             </label>
-            <label for="gjdm">
-              <span>国籍代码: </span>
-              <input type="text" id="gjdm" name="gjdm" />
+          </p>
+          <p>
+            <label for="qzqzdm">
+              <span>签证签注代码: </span>
+              <input type="text" id="qzqzdm" name="qzqzdm" />
+            </label>
+            <label for="fzjgdm">
+              <span>发证机关代码: </span>
+              <input type="text" id="fzjgdm" name="fzjgdm" />
+            </label>
+            <label for="zjqzyxq">
+              <span>准驾签注有效期: </span>
+              <input type="text" id="zjqzyxq" name="zjqzyxq" />
+            </label>
+          </p>
+          <p>
+            <label for="qzqzyxq">
+              <span>签证签注有效期: </span>
+              <input type="text" id="qzqzyxq" name="qzqzyxq" />
+            </label>
+            <label for="ickh">
+              <span>IC卡号: </span>
+              <input type="text" id="ickh" name="ickh" />
             </label>
           </p>
           <input type="submit" value="添加" />

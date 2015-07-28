@@ -78,6 +78,22 @@ def add_vehicle():
   #sdb.execute_sql('''INSERT vehicleinfo ()
   #''')
 
+@route('/drivers')
+def add_driver():
+  return template('./view/driver.tpl')
+
+@route('/add_driver', method='POST')
+def add_driver():
+  print 'add driver'
+
+@route('/companies')
+def add_company():
+  return template('./view/company.tpl')
+
+@route('/add_company', method='POST')
+def add_company():
+  print 'add company'
+
 @route('/static/<filename:path>')
 def send_static(filename):
   return static_file(filename, root='./')
