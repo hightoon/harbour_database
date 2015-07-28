@@ -7,21 +7,13 @@
 import sys
 sys.path.append('..')
 
-import time, urllib2, sqlite3
-#import ServerDb as sdb
+import time, urllib2, sqlite3, re
+import ServerDb as sdb
+import SqlCmdHelper as sch
 from datetime import datetime
 from subprocess import Popen
+from multiprocessing import Process
 from bottle import route, request, redirect, template,static_file, run
-
-driver_query_header = (
-  u'姓名', u'类别', u'证件编号', u'所属船舶',
-  u'进出时间', u'区域', u'进出状态', u'照片',
-)
-
-vehicle_query_header = (
-  u'车牌号', u'公司', u'司机', u'证件类型',
-  u'证件编号', u'进出时间', u'区域', u'进出状态',
-)
 
 @route('/')
 def root():
@@ -37,8 +29,16 @@ def query():
 
 @route('/query_drivers', method='POST')
 def query_driver():
+  name = request.forms.get('name').decode('utf-8')
+  shipname = request.forms.get('shipname')
+  status = request.forms.get('status')
+  print name
+  dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  cur = dbconn.cursor()
+  cur.execute('SELECT * FROM driver_rec_table WHERE DB=%s'%(name,))
+  res = cur.fetchall()
   return template('./view/query.tpl',
-          query_results=[driver_query_header, (u'陈海通', 'OK', '12344','343243aaa','待定','待定','未知','未知')])
+          query_results=[driver_query_header]+res)
 
 @route('/query_vehicles', method='POST')
 def query_vehicle():
@@ -74,9 +74,19 @@ def add_vehicle():
   bz = request.forms.get('bz')
   pd = request.forms.get('pd')
   sd = request.forms.get('sd')
-  print wycph, gsqc, jwcph, jncph, ssgjdm
-  #sdb.execute_sql('''INSERT vehicleinfo ()
-  #''')
+  
+  tab_cols = sch.sql_table_columns['vehicleinfo']
+  print tab_cols
+  user_input = []
+  cols = re.findall('([A-Z]+)', tab_cols)
+  print cols
+  for col in cols:
+    colname = col.lower()
+    print colname
+    user_input.append(request.forms.get(colname))
+  print user_input
+  sdb.execute_sql('INSERT vehicleinfo %s VALUES %s'%(tab_cols, str(tuple(user_input))))
+  print 'insert done'
 
 @route('/drivers')
 def add_driver():
@@ -99,8 +109,15 @@ def send_static(filename):
   return static_file(filename, root='./')
 
 def main():
-  run(host='0.0.0.0', port=80, Debug=True, reloader=False)
+  dbporc = Process(target=sdb.main, args=())
+  dbporc.start()
+  websvr = Process(target=run, args=(None, 'wsgiref', '10.140.163.132', '8081'))
+  websvr.start()
+  dbporc.join()
+  websvr.join()
+  #run(host='localhost', port=8081, Debug=True, reloader=False)
   #run(host='localhost', port=80, Debug=True)
+  
 
 if __name__ == '__main__':
   main()

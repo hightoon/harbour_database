@@ -805,7 +805,7 @@ sql_cmds = {
     CREATE TABLE driver_rec_table
     ( DN	 	VARCHAR2(10 BYTE)  NOT NULL
     , CAT 	VARCHAR2(20 BYTE)  NOT NULL
-    , ID 		VARCHAR2(20 BYTE)  NOT NULL CONSTRAINT id_pk PRIMARY KEY
+    , ID 		VARCHAR2(20 BYTE)  NOT NULL
     , VCHL 	VARCHAR2(20 BYTE)
     , DT	 	VARCHAR2(20 BYTE)
     , HAR		VARCHAR2(15 BYTE)
@@ -856,6 +856,7 @@ sql_table_columns = {
   , BZ
   , PD
   , SD
+  )
   ''',
 
   'driverinfo': \
