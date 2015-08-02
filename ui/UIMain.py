@@ -181,6 +181,7 @@ def add_driver():
   #sql = 'INSERT INTO driverinfo_use %s VALUES %s'%(tab_cols, str(tuple(user_input)))
   #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
   dbconn = sdb.connect()
+  dbconn.text_factory = str
   cur = dbconn.cursor()
   cur.execute('insert into driverinfo_use values (%s)'%(('?,'*len(cols))[:-1]), tuple(user_input))
   dbconn.commit()
@@ -206,6 +207,7 @@ def add_company():
   #sql = 'INSERT INTO company_table %s VALUES %s'%(tab_cols, str(tuple(user_input)))
   #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
   dbconn = sdb.connect()
+  dbconn.text_factory = str
   cur = dbconn.cursor()
   cur.execute('insert into company_table values (%s)'%(('?,'*len(cols))[:-1]), tuple(user_input))
   dbconn.commit()
@@ -231,6 +233,7 @@ def add_ship():
   #sql = 'INSERT INTO crs_shp_table %s VALUES %s'%(tab_cols, str(tuple(user_input)))
   #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
   dbconn = sdb.connect()
+  dbconn.text_factory = str
   cur = dbconn.cursor()
   cur.execute('insert into crs_shp_table values (%s)'%(('?,'*len(cols))[:-1]), tuple(user_input))
   dbconn.commit()
