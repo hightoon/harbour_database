@@ -23,16 +23,22 @@ def get_hosts():
   hosts = fd.read().split(',')
   fd.close()
   return hosts
-  
+
 def send_sql(sql):
-  hosts = get_hosts()
-  for host in hosts:
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-      sock.connect((host, 9998))
-      sock.sendall('sql:' + sql + "\n")
-    finally:
-      sock.close()
+  #hosts = get_hosts()
+  #for host in hosts:
+  sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  try:
+    sock.connect(('192.168.0.7', 9998))
+    sock.sendall('sql:' + sql + "\n")
+  finally:
+    sock.close()
+
+def convert_table_value(s):
+  if s == '':
+    return '\'\''
+  else:
+    return '\'%s\''%s
 
 @route('/')
 def root():
@@ -57,7 +63,7 @@ def query_driver():
   dbconn = sdb.connect()
   cur = dbconn.cursor()
   #cur.execute("SELECT * FROM driver_rec_table WHERE DN=:drvname", {'drvname':name})
-  cur.execute("SELECT * FROM driver_rec_table WHERE DN=?", (name,))
+  cur.execute("SELECT * FROM driver_rec_table WHERE name=?", (name,))
   #cur.execute("SELECT * FROM driver_rec_table")
   res = cur.fetchall()
   print res
@@ -71,7 +77,7 @@ def query_vehicle():
   vehicle_query_header=()
   return template('./view/query.tpl',
           query_results=[vehicle_query_header])
-          
+
 @route('/query_company', method='POST')
 def query_company():
   fullname = request.forms.get('fullname')
@@ -88,7 +94,7 @@ def query_company():
   dbconn.close()
   return template('./view/query.tpl',
           query_results=res)
-          
+
 @route('/query_vehicle_info', method='POST')
 def query_vhl_info():
   plate = request.forms.get('plate').decode('utf-8')
@@ -106,7 +112,7 @@ def query_vhl_info():
   dbconn.close()
   return template('./view/query.tpl',
           query_results=res)
-          
+
 @route('/query_driver_info', method='POST')
 def query_driver_info():
   name = request.forms.get('name')
@@ -121,7 +127,7 @@ def query_driver_info():
   dbconn.close()
   return template('./view/query.tpl',
           query_results=res)
-          
+
 @route('/query_ship', method='POST')
 def query_ship():
   cruise = request.forms.get('cruise')
@@ -141,7 +147,7 @@ def add_vehicle():
   return template('./view/vehicle.tpl')
 
 @route('/add_vehicle', method='POST')
-def add_vehicle():  
+def add_vehicle():
   tab_cols = sch.sql_table_columns['vehicleinfo']
   user_input = []
   cols = re.findall('([A-Z]+)', tab_cols)
@@ -149,20 +155,21 @@ def add_vehicle():
     colname = col.lower()
     user_input.append(request.forms.get(colname))
   print user_input
-  print tuple(user_input)
   #sql = 'INSERT INTO vehicleinfo %s VALUES %s'%(tab_cols, str(tuple(user_input)))
   #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
   dbconn = sdb.connect()
   dbconn.text_factory = str
   cur = dbconn.cursor()
-  sql = 'insert into vehicleinfo values (%s)'%('?,'*len(cols))[:-1]
+  sql = 'insert into vehicleinfo values (%s)'%(('?,'*len(cols))[:-1],)
   print sql
   cur.execute(sql, tuple(user_input))
   dbconn.commit()
   cur.close()
   dbconn.close()
-  print 'insert vehicle done'
-  sql = 'insert into vehicleinfo values (%s)'%(str(tuple(user_input)),)
+  #sql = 'insert into vehicleinfo values %s'%(str(tuple(user_input)),)
+  user_input = [convert_table_value(item) for item in user_input]
+  sql = 'insert into vehicleinfo(%s) values (%s)'%(','.join(cols), ','.join(user_input),)
+  print sql
   send_sql(sql)
 
 @route('/drivers')
@@ -189,7 +196,8 @@ def add_driver():
   cur.close()
   dbconn.close()
   print 'insert driver done'
-  sql = 'insert into vehicleinfo values (%s)'%(str(tuple(user_input)),)
+  user_input = [convert_table_value(item) for item in user_input]
+  sql = 'insert into driverinfo_use values (%s)'%(','.join(user_input),)
   send_sql(sql)
 
 @route('/companies')
@@ -216,7 +224,7 @@ def add_company():
   cur.close()
   dbconn.close()
   print 'insert company done'
-  sql = 'insert into vehicleinfo values (%s)'%(str(tuple(user_input)),)
+  sql = 'insert into company_table values (%s)'%(','.join(user_input),)
   send_sql(sql)
 
 @route('/ships')
@@ -243,14 +251,14 @@ def add_ship():
   cur.close()
   dbconn.close()
   print 'insert ship done'
-  sql = 'insert into vehicleinfo values (%s)'%(str(tuple(user_input)),)
+  sql = 'insert into crs_shp_table values (%s)'%(','.join(user_input),)
   send_sql(sql)
 
 @route('/static/<filename:path>')
 def send_static(filename):
   return static_file(filename, root='./')
 
-  
+
 def main():
   sdb.main()
   dbporc = Process(target=sdb.run_sock_svr, args=())
@@ -261,7 +269,7 @@ def main():
   websvr.join()
   #run(host='localhost', port=8081, Debug=True, reloader=False)
   #run(host='localhost', port=80, Debug=True)
-  
+
 
 if __name__ == '__main__':
   main()

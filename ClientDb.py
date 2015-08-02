@@ -96,21 +96,23 @@ class ClientSockSvr(SocketServer.BaseRequestHandler):
     self.data = self.request.recv(1024).strip().decode('utf-8')
     print "{} wrote:".format(self.client_address[0])
     self._process_data()
-    
+
   def _process_data(self):
     print self.data
     if self.data.startswith('sql:'):
       sql = self.data[4:].strip()
       dbconn = connect()
+      dbconn.text_factory = str
       c = dbconn.cursor()
       c.execute(sql)
       dbconn.commit()
       c.close()
       dbconn.close()
       print 'table updated'
-	
+
 def run_sock_svr():
   HOST, PORT = socket.gethostbyname(socket.gethostname()), 9998
+  print HOST, PORT
   server = SocketServer.TCPServer((HOST, PORT), ClientSockSvr)
   server.serve_forever()
 

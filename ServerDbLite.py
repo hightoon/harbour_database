@@ -63,7 +63,7 @@ class ClientSockSvr(SocketServer.BaseRequestHandler):
     self.data = self.request.recv(1024).strip().decode('utf-8')
     print "{} wrote:".format(self.client_address[0])
     self._process_data()
-    
+
   def _process_data(self):
     print self.data
     if self.data.startswith('sql:'):
@@ -76,9 +76,10 @@ class ClientSockSvr(SocketServer.BaseRequestHandler):
       c.close()
       dbconn.close()
       print 'table updated'
-	
+
 def run_sock_svr():
   HOST, PORT = socket.gethostbyname(socket.gethostname()), 9999
+  print 'DB started at ', HOST, PORT
   server = SocketServer.TCPServer((HOST, PORT), ClientSockSvr)
   server.serve_forever()
 

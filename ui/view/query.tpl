@@ -43,10 +43,10 @@
               <span>船舶名称: </span>
               <input type="text" id="shipname" name="shipname" />
             </label>
-            <label for="status">
+            <!--label for="status">
               <span>进出状态: </span>
               <input type="text" id="status" name="status" />
-            </label>
+            </label-->
           </p>
           <input type="submit" value="查询" />
         </form>
