@@ -21,13 +21,15 @@
           <li><h4><a href="/setting">设置</a></h4></li>
         </ul>
       </div>
-      <div id="vehicle-manage-page" class="col-10">
-        <h4>车辆管理 >>> 添加船舶信息</h4>
+      <div id="vehicle-manage-page" class="col-9">
+        <h4>数据库管理 >>> 添加船舶信息</h4>
         <form action="/add_ship" method="POST">
+          <p>尾部带<strong><abbr title="required">*</abbr></strong>为必填项。</p>
           <p>
             <label for="hc">
               <span>航次(3位口岸代码+4位年+1位服务器序号+5位流水): </span>
               <input type="text" id="hc" name="hc" />
+              <strong><abbr title="required">*</abbr></strong>
             </label>
 		  </p>
 		  <p>
@@ -38,6 +40,7 @@
             <label for="cbdh">
               <span>MMSI号: </span>
               <input type="text" id="cbdh" name="cbdh" />
+              <strong><abbr title="required">*</abbr></strong>
             </label>
             <label for="jtgjlxdm">
               <span>交通工具类型代码: </span>
@@ -65,6 +68,7 @@
             <label for="imo">
               <span>IMO号: </span>
               <input type="text" id="imo" name="imo" />
+              <strong><abbr title="required">*</abbr></strong>
               <!--select id="tw" name="tw">
                 <option value="l" selected>左</option>
                 <option value="r">右</option>
@@ -120,12 +124,14 @@
             <label for="czy">
               <span>操作员: </span>
               <input type="text" id="czy" name="czy" />
+              <strong><abbr title="required">*</abbr></strong>
             </label>
           </p>
           <p>
             <label for="czsj">
               <span>操作时间: </span>
-              <input type="text" id="czsj" name="czsj" />
+              <input type="text" id="czsj" name="czsj" placeholder="2011-12-13 14:15"/>
+              <strong><abbr title="required">*</abbr></strong>
             </label>
             <label for="cjg">
               <span>船籍港: </span>
@@ -158,6 +164,7 @@
 			<label for="qfr">
               <span>启封人: </span>
               <input type="text" id="qfr" name="qfr" />
+              <strong><abbr title="required">*</abbr></strong>
             </label>
 			<label for="qfsj">
               <span>启封时间: </span>

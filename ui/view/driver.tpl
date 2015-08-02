@@ -21,9 +21,10 @@
           <li><h4><a href="/setting">设置</a></h4></li>
         </ul>
       </div>
-      <div id="vehicle-manage-page" class="col-10">
-        <h4>车辆管理 >>> 添加司机信息</h4>
+      <div id="vehicle-manage-page" class="col-9">
+        <h4>数据库管理 >>> 添加司机信息</h4>
         <form action="/add_driver" method="POST">
+          <p>尾部带<strong><abbr title="required">*</abbr></strong>为必填项。</p>
           <p>
             <label for="tlq">
               <span>停留期: </span>
@@ -46,6 +47,7 @@
             <label for="sfzh">
               <span>身份证号: </span>
               <input type="text" id="sfzh" name="sfzh" />
+              <strong><abbr title="required">*</abbr></strong>
             </label>
             <label for="d2xm">
               <span>第2姓名: </span>
@@ -90,16 +92,19 @@
             <label for="czr">
               <span>操作人代码: </span>
               <input type="text" id="czr" name="czr" />
+              <strong><abbr title="required">*</abbr></strong>
             </label>
           </p>
           <p>
             <label for="czsj">
               <span>操作（录入）时间: </span>
-              <input type="text" id="czsj" name="czsj" />
+              <input type="text" id="czsj" name="czsj" placeholder="2011-12-13 14:15"/>
+              <strong><abbr title="required">*</abbr></strong>
             </label>
             <label for="czkadm">
               <span>操作口岸: </span>
               <input type="text" id="czkadm" name="czkadm" />
+              <strong><abbr title="required">*</abbr></strong>
             </label>
             <label for="bz">
               <span>备注: </span>
@@ -128,6 +133,7 @@
             <label for="xm">
               <span>姓名: </span>
               <input type="text" id="xm" name="xm" />
+              <strong><abbr title="required">*</abbr></strong>
             </label>
             <label for="xbdm">
               <span>性别: </span>
@@ -146,6 +152,7 @@
             <label for="sqbh">
               <span>申请表号: </span>
               <input type="text" id="sqbh" name="sqbh" />
+              <strong><abbr title="required">*</abbr></strong>
             </label>
             <label for="zjqzyxq">
               <span>准驾签注有效期: </span>
@@ -170,6 +177,7 @@
             <label for="qzqzyxq">
               <span>签证签注有效期: </span>
               <input type="text" id="qzqzyxq" name="qzqzyxq" />
+              <strong><abbr title="required">*</abbr></strong>
             </label>
             <label for="ickh">
               <span>IC卡号: </span>

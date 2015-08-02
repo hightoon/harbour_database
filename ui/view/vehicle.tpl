@@ -21,18 +21,22 @@
           <li><h4><a href="/setting">设置</a></h4></li>
         </ul>
       </div>
-      <div id="vehicle-manage-page" class="col-10">
-        <h4>车辆管理 >>> 添加车辆信息</h4>
+      <div id="vehicle-manage-page" class="col-9">
+        <h4>数据库管理 >>> 添加车辆信息</h4>
         <form action="/add_vehicle" method="POST">
+          <p>尾部带<strong><abbr title="required">*</abbr></strong>为必填项。</p>
           <p>
             <label for="wycph">
               <span>唯一车牌号: </span>
               <input type="text" id="wycph" name="wycph" />
+              <strong><abbr title="required">*</abbr></strong>
             </label>
             <label for="gsqc">
               <span>公司全称: </span>
               <input type="text" id="gsqc" name="gsqc" />
             </label>
+          </p>
+          <p>
             <label for="jwcph">
               <span>境外车牌号: </span>
               <input type="text" id="jwcph" name="jwcph" />
@@ -115,10 +119,12 @@
             <label for="czy">
               <span>录入检查员代码: </span>
               <input type="text" id="czy" name="czy" />
+              <strong><abbr title="required">*</abbr></strong>
             </label>
             <label for="czsj">
               <span>录入时间: </span>
-              <input type="text" id="czsj" name="czsj" />
+              <input type="text" id="czsj" name="czsj" placeholder="2011-12-13 10:00"/>
+              <strong><abbr title="required">*</abbr></strong>
             </label>
           </p>
           <p>

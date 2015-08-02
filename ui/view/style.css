@@ -117,6 +117,8 @@ span.company-home {
 
 .col-9 {
   width: 75%;
+  padding: 22px;
+  border-top:2px solid #0066cc;
 }
 
 .col-10 {
