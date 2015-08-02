@@ -81,7 +81,7 @@ def db_init():
   global rec_db
   if rec_db is None:
     rec_db = connect()
-    rec_db.text_factory = bytes
+    rec_db.text_factory = str
     for tn in sqlite_cmds.keys():
       create_table(tn, sqlite_cmds[tn])
     rec_db.commit()

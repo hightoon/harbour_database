@@ -8,7 +8,8 @@ import sys
 sys.path.append('..')
 
 import time, urllib2, sqlite3, re, socket
-import ServerDb as sdb
+#import ServerDb as sdb
+import ServerDbLite as sdb
 import SqlCmdHelper as sch
 import time, urllib2, sqlite3
 import SqlCmdHelper
@@ -52,9 +53,11 @@ def query_driver():
   shipname = request.forms.get('shipname')
   status = request.forms.get('status')
   print name
-  dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  dbconn = sdb.connect()
   cur = dbconn.cursor()
-  cur.execute("SELECT * FROM driver_rec_table WHERE DN=:drvname", {'drvname':name})
+  #cur.execute("SELECT * FROM driver_rec_table WHERE DN=:drvname", {'drvname':name})
+  cur.execute("SELECT * FROM driver_rec_table WHERE DN=?", (name,))
   #cur.execute("SELECT * FROM driver_rec_table")
   res = cur.fetchall()
   print res
@@ -73,10 +76,12 @@ def query_vehicle():
 def query_company():
   fullname = request.forms.get('fullname')
   print fullname
-  dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  dbconn.sdb.connect()
   cur = dbconn.cursor()
   #cur.execute("SELECT * FROM company_table WHERE GSQC=:name", {'name':fullname})
-  cur.execute("SELECT * FROM company_table")
+  #cur.execute("SELECT * FROM company_table")
+  cur.execute('SELECT * FROM company_table WHERE GSQC=?', (fullname,))
   res = cur.fetchall()
   print res
   cur.close()
@@ -86,13 +91,17 @@ def query_company():
           
 @route('/query_vehicle_info', method='POST')
 def query_vhl_info():
-  plate = request.forms.get('plate')
-  dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  plate = request.forms.get('plate').decode('utf-8')
+  print plate
+  #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  dbconn = sdb.connect()
   cur = dbconn.cursor()
-  cur.execute("SELECT * FROM vehicleinfo WHERE WYCPH=:plate", {'plate':plate})
-  #cur.execute("SELECT * FROM vehicleinfo")
+  cur.execute("SELECT * FROM vehicleinfo WHERE WYCPH=?", (plate,))
   res = cur.fetchall()
   print res
+  #cur.execute("SELECT * FROM vehicleinfo")
+  #res = cur.fetchall()
+  #print res
   cur.close()
   dbconn.close()
   return template('./view/query.tpl',
@@ -101,9 +110,10 @@ def query_vhl_info():
 @route('/query_driver_info', method='POST')
 def query_driver_info():
   name = request.forms.get('name')
-  dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  dbconn = sdb.connect()
   cur = dbconn.cursor()
-  cur.execute("SELECT * FROM driverinfo_use WHERE XM=:name", {'name':name})
+  cur.execute("SELECT * FROM driverinfo_use WHERE XM=?", (name,))
   #cur.execute("SELECT * FROM driverinfo")
   res = cur.fetchall()
   print res
@@ -115,9 +125,10 @@ def query_driver_info():
 @route('/query_ship', method='POST')
 def query_ship():
   cruise = request.forms.get('cruise')
-  dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  dbconn = sdb.connect()
   cur = dbconn.cursor()
-  cur.execute("SELECT * FROM crs_shp_table WHERE HC=:cruise", {'cruise':cruise})
+  cur.execute("SELECT * FROM crs_shp_table WHERE HC=?", (cruise,))
   res = cur.fetchall()
   print res
   cur.close()
@@ -138,10 +149,15 @@ def add_vehicle():
     colname = col.lower()
     user_input.append(request.forms.get(colname))
   print user_input
-  sql = 'INSERT INTO vehicleinfo %s VALUES %s'%(tab_cols, str(tuple(user_input)))
-  dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  print tuple(user_input)
+  #sql = 'INSERT INTO vehicleinfo %s VALUES %s'%(tab_cols, str(tuple(user_input)))
+  #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  dbconn = sdb.connect()
+  dbconn.text_factory = str
   cur = dbconn.cursor()
-  cur.execute(sql)
+  sql = 'insert into vehicleinfo values (%s)'%('?,'*len(cols))[:-1]
+  print sql
+  cur.execute(sql, tuple(user_input))
   dbconn.commit()
   cur.close()
   dbconn.close()
@@ -162,10 +178,11 @@ def add_driver():
     colname = col.lower()
     user_input.append(request.forms.get(colname))
   print user_input
-  sql = 'INSERT INTO driverinfo_use %s VALUES %s'%(tab_cols, str(tuple(user_input)))
-  dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  #sql = 'INSERT INTO driverinfo_use %s VALUES %s'%(tab_cols, str(tuple(user_input)))
+  #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  dbconn = sdb.connect()
   cur = dbconn.cursor()
-  cur.execute(sql)
+  cur.execute('insert into driverinfo_use values (%s)'%(('?,'*len(cols))[:-1]), tuple(user_input))
   dbconn.commit()
   cur.close()
   dbconn.close()
@@ -186,10 +203,11 @@ def add_company():
     colname = col.lower()
     user_input.append(request.forms.get(colname))
   print user_input
-  sql = 'INSERT INTO company_table %s VALUES %s'%(tab_cols, str(tuple(user_input)))
-  dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  #sql = 'INSERT INTO company_table %s VALUES %s'%(tab_cols, str(tuple(user_input)))
+  #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  dbconn = sdb.connect()
   cur = dbconn.cursor()
-  cur.execute(sql)
+  cur.execute('insert into company_table values (%s)'%(('?,'*len(cols))[:-1]), tuple(user_input))
   dbconn.commit()
   cur.close()
   dbconn.close()
@@ -210,10 +228,11 @@ def add_ship():
     colname = col.lower()
     user_input.append(request.forms.get(colname))
   print user_input
-  sql = 'INSERT INTO crs_shp_table %s VALUES %s'%(tab_cols, str(tuple(user_input)))
-  dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  #sql = 'INSERT INTO crs_shp_table %s VALUES %s'%(tab_cols, str(tuple(user_input)))
+  #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
+  dbconn = sdb.connect()
   cur = dbconn.cursor()
-  cur.execute(sql)
+  cur.execute('insert into crs_shp_table values (%s)'%(('?,'*len(cols))[:-1]), tuple(user_input))
   dbconn.commit()
   cur.close()
   dbconn.close()
