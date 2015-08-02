@@ -25,7 +25,6 @@ def get_hosts():
   return hosts
 
 def send_sql(sql):
-  hosts = get_hosts()
   HOST, PORT = '192.168.0.7', 9998
   sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   try:
@@ -82,16 +81,22 @@ def query_driver():
 
 @route('/query_vehicles', method='POST')
 def query_vehicle():
-  vehicle_query_header=()
+  plate = request.forms.get('plate')
+  dbconn = sdb.connect()
+  cur = dbconn.cursor()
+  cur.execute('select * from vehicle_rec_table where plate=?', (plate,))
+  res = cur.fetchall()
+  cur.close()
+  dbconn.close()
   return template('./view/query.tpl',
-          query_results=[vehicle_query_header])
+          query_results=res)
 
 @route('/query_company', method='POST')
 def query_company():
   fullname = request.forms.get('fullname')
   print fullname
   #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
-  dbconn.sdb.connect()
+  dbconn = sdb.connect()
   cur = dbconn.cursor()
   #cur.execute("SELECT * FROM company_table WHERE GSQC=:name", {'name':fullname})
   #cur.execute("SELECT * FROM company_table")
@@ -273,7 +278,7 @@ def main():
   sdb.main()
   dbporc = Process(target=sdb.run_sock_svr, args=())
   dbporc.start()
-  websvr = Process(target=run, args=(None, 'wsgiref', '127.0.0.1', '8081'))
+  websvr = Process(target=run, args=(None, 'wsgiref', '0.0.0.0', '8081'))
   websvr.start()
   dbporc.join()
   websvr.join()
