@@ -87,9 +87,9 @@
                 <option value="1">可开公司所有车辆</option>
               </select>
             </label>
-            <label for="czy">
+            <label for="czr">
               <span>操作人代码: </span>
-              <input type="text" id="czy" name="czy" />
+              <input type="text" id="czr" name="czr" />
             </label>
           </p>
           <p>
@@ -164,10 +164,6 @@
             <label for="fzjgdm">
               <span>发证机关代码: </span>
               <input type="text" id="fzjgdm" name="fzjgdm" />
-            </label>
-            <label for="zjqzyxq">
-              <span>准驾签注有效期: </span>
-              <input type="text" id="zjqzyxq" name="zjqzyxq" />
             </label>
           </p>
           <p>

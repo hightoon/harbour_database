@@ -23,7 +23,7 @@
       </div>
       <div id="vehicle-manage-page" class="col-10">
         <h4>车辆管理 >>> 添加船舶信息</h4>
-        <form action="/add_vehicle" method="POST">
+        <form action="/add_ship" method="POST">
           <p>
             <label for="hc">
               <span>航次(3位口岸代码+4位年+1位服务器序号+5位流水): </span>
@@ -132,13 +132,13 @@
               <input type="text" id="cjg" name="cjg" />
             </label>
             <label for="dqtkmt">
-              <span>当前停靠地（码头）: </span>
+              <span>当前停靠地(码头): </span>
               <input type="text" id="dqtkmt" name="dqtkmt" />
             </label>
           </p>
           <p>
             <label for="dqtkbw">
-              <span>当前停靠地（泊位）: </span>
+              <span>当前停靠地(泊位): </span>
               <input type="text" id="dqtkbw" name="dqtkbw" />
             </label>
             <label for="jdxgzt">

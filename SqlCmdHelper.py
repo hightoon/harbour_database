@@ -521,6 +521,42 @@ sql_cmds = {
       PRIMARY KEY (ZJHM, ZJLBDM, GJDQDM)
     )
     ''',
+    
+    'create_driver_info_use_table':\
+    '''
+    CREATE TABLE driverinfo_use
+    ( TLQ     VARCHAR2(30 BYTE)
+    , QWGDM   VARCHAR2(30 BYTE)
+    , LZGDM   VARCHAR2(30 BYTE)
+    , XKZH    VARCHAR2(30 BYTE)
+    , SFZH    VARCHAR2(30 BYTE)
+    , D2XM    VARCHAR2(30 BYTE)
+    , D2CSRQ  VARCHAR2(30 BYTE)
+    , D2ZJHM  VARCHAR2(300 BYTE)
+    , D2ZJLBDM VARCHAR2(300 BYTE)
+    , TXKADM  VARCHAR2(300 BYTE)
+    , MZDM    VARCHAR2(20 BYTE)
+    , TYBZ    VARCHAR2(20 BYTE)
+    , CZR     VARCHAR2(20 BYTE)
+    , CZSJ    VARCHAR2(20 BYTE)
+    , CZKADM  VARCHAR2(20 BYTE)
+    , BZ      VARCHAR2(200 BYTE)
+    , QZH     VARCHAR2(30 BYTE)
+    , ZJHM    VARCHAR2(20 BYTE)
+    , ZJLBDM  VARCHAR2(20 BYTE)
+    , XM      VARCHAR2(50 BYTE)
+    , XBDM    VARCHAR2(20 BYTE)
+    , CSRQ    VARCHAR2(20 BYTE)
+    , GJDM    VARCHAR2(20 BYTE)
+    , SQBH    VARCHAR2(20 BYTE)
+    , ZJQZYXQ VARCHAR2(20 BYTE)
+    , GSQC    VARCHAR2(100 BYTE)
+    , QZQZDM  VARCHAR2(20 BYTE)
+    , FZJGDM  VARCHAR2(20 BYTE)
+    , QZQZYXQ VARCHAR2(20 BYTE)
+    , ICKH    VARCHAR2(30 BYTE)
+    )
+    ''',
 
     'create_veh_drvr_rel_table':\
     '''
@@ -803,15 +839,15 @@ sql_cmds = {
     'create_driver_rec_table':\
     '''
     CREATE TABLE driver_rec_table
-    ( DN	 	VARCHAR2(10 BYTE)  NOT NULL
-    , CAT 	VARCHAR2(20 BYTE)  NOT NULL
-    , ID 		VARCHAR2(20 BYTE)  NOT NULL
-    , VCHL 	VARCHAR2(20 BYTE)
-    , DT	 	VARCHAR2(20 BYTE)
-    , HAR		VARCHAR2(15 BYTE)
-    , DIRCT VARCHAR2(15 BYTE)
+    ( DN	 	VARCHAR2(10 BYTE)  
+    , CAT 	VARCHAR2(20 BYTE)  
+    , ID 		VARCHAR2(20 BYTE)  
+    , VCHL 	VARCHAR2(20 BYTE) 
+    , DT	 	VARCHAR2(20 BYTE) 
+    , HAR		VARCHAR2(15 BYTE) 
+    , DIRCT VARCHAR2(15 BYTE) 
     , PIC 	VARCHAR2(20 BYTE)
-    )
+    ) 
     ''',
 
     'create_vechicle_rec_table':\
@@ -825,7 +861,8 @@ sql_cmds = {
     , DT	 		VARCHAR2(20 BYTE)
     , HARBOUR VARCHAR2(15 BYTE)
     , DIRCT 	VARCHAR2(15 BYTE)
-    , PIC 		VARCHAR2(30 BYTE)
+    , DRVPIC	VARCHAR2(30 BYTE)
+    , VHLPIC	VARCHAR2(30 BYTE)
     )
     '''
 }
@@ -892,6 +929,41 @@ sql_table_columns = {
   , QZH
   , TLQ)
   ''',
+  
+  'driverinfo_use': \
+  '''
+  ( TLQ
+  , QWGDM
+  , LZGDM
+  , XKZH
+  , SFZH
+  , D2XM
+  , D2CSRQ
+  , D2ZJHM
+  , D2ZJLBDM
+  , TXKADM
+  , MZDM
+  , TYBZ
+  , CZR
+  , CZSJ
+  , CZKADM
+  , BZ
+  , QZH
+  , ZJHM
+  , ZJLBDM
+  , XM
+  , XBDM
+  , CSRQ
+  , GJDM
+  , SQBH
+  , ZJQZYXQ
+  , GSQC
+  , QZQZDM
+  , FZJGDM
+  , QZQZYXQ
+  , ICKH
+  )
+  ''',
 
   'crs_shp_table': \
   '''
@@ -948,7 +1020,7 @@ sql_table_columns = {
 }
 
 sqlite_cmds = {
-  'vehicle_info_table':\
+  'vehicleinfo':\
   '''
       (
         WYCPH   text PRIMARY KEY,
@@ -977,7 +1049,7 @@ sqlite_cmds = {
       )
   ''',
 
-  'driver_info_table':\
+  'driverinfo':\
   '''
   (
     ZJHM      text,
@@ -1012,8 +1084,43 @@ sqlite_cmds = {
     TLQ       text
   )
   ''',
+  
+  'driverinfo_use': \
+  '''
+    ( TLQ     text
+    , QWGDM   text
+    , LZGDM   text
+    , XKZH    text
+    , SFZH    text
+    , D2XM    text
+    , D2CSRQ  text
+    , D2ZJHM  text
+    , D2ZJLBDM text
+    , TXKADM  text
+    , MZDM    text
+    , TYBZ    text
+    , CZR     text
+    , CZSJ    text
+    , CZKADM  text
+    , BZ      text
+    , QZH     text
+    , ZJHM    text
+    , ZJLBDM  text
+    , XM      text
+    , XBDM    text
+    , CSRQ    text
+    , GJDM    text
+    , SQBH    text
+    , ZJQZYXQ text
+    , GSQC    text
+    , QZQZDM  text
+    , FZJGDM  text
+    , QZQZYXQ text
+    , ICKH    text
+    )
+    ''',
 
-  'veh_drvr_rel_table':\
+  'vhl_drvr_relat':\
   '''
   (
     WYCPH      text PRIMARY KEY,
@@ -1228,6 +1335,8 @@ sqlite_cmds = {
   , date text
   , harbour text
   , direction text
+  , drvpic text
+  , vhlpic text
   )
   '''
 }

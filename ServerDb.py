@@ -10,6 +10,7 @@ from SqlCmdHelper import sql_cmds
 dbconn = None
 DB_URL = socket.gethostbyname(socket.gethostname()) + '/XE'
 
+
 def connect_orclex(usr, passwd, url):
   return cx_Oracle.connect(usr, passwd, url)
 
@@ -48,6 +49,12 @@ def create_driver_info_table():
 
 def drop_driver_info_table():
   execute_sql('drop table driverinfo')
+  
+def create_driver_info_use_table():
+  execute_sql(sql_cmds['create_driver_info_use_table'])
+
+def drop_driver_info_use_table():
+  execute_sql('drop table driverinfo_use')
 
 def create_veh_drvr_rel_table():
   execute_sql(sql_cmds['create_veh_drvr_rel_table'])
@@ -104,6 +111,7 @@ def drop_vehicle_rec_table():
 def init_db():
   create_vehicle_info_table()
   create_driver_info_table()
+  create_driver_info_use_table()
   create_veh_drvr_rel_table()
   create_cruise_ship_table()
   create_company_table()
@@ -113,6 +121,11 @@ def init_db():
   create_driver_rec_table()
   create_vechicle_rec_table()
 
+def drop_all():
+  drop_crs_shp_table()
+  drop_driver_info_use_table()
+  drop_company_table()
+  
 def create_all_tables():
   print globals().update(locals()).get('create_vehicle_info_table')
 
@@ -127,12 +140,16 @@ class SqlSockSvr(SocketServer.BaseRequestHandler):
   def _process_data(self):
     if self.data.startswith('sql:'):
       sql = self.data[4:].strip()
-      c = execute_sql(sql)
+      dbconn = connect_orclex('haitong', '111111', DB_URL)
+      cur = dbconn.cursor()
+      cur.execute(sql)
       if sql.startswith('SELECT'):
         for res in c:
           print res
-      c.close()
-
+      else:
+        dbconn.commit()
+      cur.close()
+      dbconn.close()
 
 def run_sock_svr():
   HOST, PORT = socket.gethostbyname(socket.gethostname()), 9999
@@ -143,12 +160,10 @@ def run_sock_svr():
 def main():
   global dbconn
   if dbconn is None:
-    dbconn = connect_orclex('haitong', '111111', DB_URL)
+    dbconn = connect_orclex('tester', '111111', DB_URL)
   #print dbconn.version
-  #drop_vehicle_info_table()
-  #drop_driver_info_table()
+  #drop_all()
   init_db()
-  run_sock_svr()
 
 
 if __name__ == '__main__':

@@ -22,7 +22,7 @@
         </ul>
       </div>
       <div id="query-page" class="col-10">
-        <h4 id="query-drivers">查询 >>> 人员进出列表</h4>
+        <h4 id="query-drivers">查询 >>> 人员进出</h4>
         <form action="/query_drivers" method="POST">
           <p>
             <label for="startdate">
@@ -50,7 +50,7 @@
           </p>
           <input type="submit" value="查询" />
         </form>
-        <h4 id="query-vehicles">查询 >>> 车辆查询</h4>
+        <h4 id="query-vehicles">查询 >>> 车辆进出</h4>
         <form action="/query_vehicles" method="POST">
           <p>
               <label for="startdate">
@@ -68,6 +68,46 @@
               <label for="shipname">
                 <span>船舶名称: </span>
                 <input type="text" id="shipname" name="shipname" />
+              </label>
+          </p>
+          <input type="submit" value="查询" />
+        </form>
+        <h4 id="query-company">查询 >>> 公司信息</h4>
+        <form action="/query_company" method="POST">
+          <p>
+              <label for="fullname">
+                <span>公司全称: </span>
+                <input type="text" id="fullname" name="fullname" />
+              </label>
+          </p>
+          <input type="submit" value="查询" />
+        </form>
+        <h4 id="query-vehicle-info">查询 >>> 车辆信息</h4>
+        <form action="/query_vehicle_info" method="POST">
+          <p>
+              <label for="plate">
+                <span>车牌号: </span>
+                <input type="text" id="plate" name="plate" />
+              </label>
+          </p>
+          <input type="submit" value="查询" />
+        </form>
+        <h4 id="query-driver-info">查询 >>> 司机信息</h4>
+        <form action="/query_driver_info" method="POST">
+          <p>
+              <label for="name">
+                <span>姓名: </span>
+                <input type="text" id="name" name="name" />
+              </label>
+          </p>
+          <input type="submit" value="查询" />
+        </form>
+        <h4 id="query-ship">查询 >>> 船舶信息</h4>
+        <form action="/query_ship" method="POST">
+          <p>
+              <label for="cruise">
+                <span>航次: </span>
+                <input type="text" id="cruise" name="cruise" />
               </label>
           </p>
           <input type="submit" value="查询" />

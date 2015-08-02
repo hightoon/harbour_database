@@ -14,13 +14,6 @@ from SqlCmdHelper import sqlite_cmds
 
 rec_db = None
 
-class ClientSockSvr(SocketServer.BaseRequestHandler):
-  def handle(self):
-    # self.request is the TCP socket connected to the client
-    self.data = self.request.recv(1024).strip()
-    print "{} wrote:".format(self.client_address[0])
-    print self.data
-
 def connect(dbfile='clientDb.db'):
   return sqlite3.connect(dbfile)
 
@@ -97,6 +90,25 @@ def drop_all():
   for tn in sqlite_cmds.keys():
     drop_table(tn)
 
+class ClientSockSvr(SocketServer.BaseRequestHandler):
+  def handle(self):
+    # self.request is the TCP socket connected to the client
+    self.data = self.request.recv(1024).strip().decode('utf-8')
+    print "{} wrote:".format(self.client_address[0])
+    self._process_data()
+    
+  def _process_data(self):
+    print self.data
+    if self.data.startswith('sql:'):
+      sql = self.data[4:].strip()
+      dbconn = connect()
+      c = dbconn.cursor()
+      c.execute(sql)
+      dbconn.commit()
+      c.close()
+      dbconn.close()
+      print 'table updated'
+	
 def run_sock_svr():
   HOST, PORT = socket.gethostbyname(socket.gethostname()), 9998
   server = SocketServer.TCPServer((HOST, PORT), ClientSockSvr)
