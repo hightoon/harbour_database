@@ -25,7 +25,7 @@ def get_hosts():
   return hosts
 
 def send_sql(sql):
-  HOST, PORT = '192.168.0.7', 9998
+  HOST, PORT = '172.16.0.101', 9998
   sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   try:
       sock.connect((HOST, PORT))
@@ -33,7 +33,7 @@ def send_sql(sql):
   finally:
       sock.close()
 
-  HOST, PORT = '192.168.0.7', 9998
+  HOST, PORT = '172.16.0.108', 9998
   sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   try:
       sock.connect((HOST, PORT))
@@ -278,7 +278,7 @@ def main():
   sdb.main()
   dbporc = Process(target=sdb.run_sock_svr, args=())
   dbporc.start()
-  websvr = Process(target=run, args=(None, 'wsgiref', '0.0.0.0', '8081'))
+  websvr = Process(target=run, args=(None, 'wsgiref', '172.16.0.100', '8081'))
   websvr.start()
   dbporc.join()
   websvr.join()
