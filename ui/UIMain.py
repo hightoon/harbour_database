@@ -25,14 +25,22 @@ def get_hosts():
   return hosts
 
 def send_sql(sql):
-  #hosts = get_hosts()
-  #for host in hosts:
+  hosts = get_hosts()
+  HOST, PORT = '192.168.0.7', 9998
   sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   try:
-    sock.connect(('192.168.0.7', 9998))
-    sock.sendall('sql:' + sql + "\n")
+      sock.connect((HOST, PORT))
+      sock.sendall('sql:' + sql + "\n")
   finally:
-    sock.close()
+      sock.close()
+
+  HOST, PORT = '192.168.0.7', 9998
+  sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  try:
+      sock.connect((HOST, PORT))
+      sock.sendall('sql:' + sql + "\n")
+  finally:
+      sock.close()
 
 def convert_table_value(s):
   if s == '':
@@ -224,6 +232,7 @@ def add_company():
   cur.close()
   dbconn.close()
   print 'insert company done'
+  user_input = [convert_table_value(item) for item in user_input]
   sql = 'insert into company_table values (%s)'%(','.join(user_input),)
   send_sql(sql)
 
@@ -251,6 +260,7 @@ def add_ship():
   cur.close()
   dbconn.close()
   print 'insert ship done'
+  user_input = [convert_table_value(item) for item in user_input]
   sql = 'insert into crs_shp_table values (%s)'%(','.join(user_input),)
   send_sql(sql)
 

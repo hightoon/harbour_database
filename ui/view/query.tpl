@@ -113,6 +113,7 @@
           <input type="submit" value="查询" />
         </form>
         <br/><br/>
+        <h5>查询结果</h5>
         <table class="query-results">
           %for item in query_results:
             <tr>
