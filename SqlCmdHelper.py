@@ -1316,7 +1316,7 @@ sqlite_cmds = {
   '''
   ( name text
   , cat text
-  , id text primary key
+  , id text
   , vechicle text
   , date text
   , harbour text
@@ -1331,7 +1331,7 @@ sqlite_cmds = {
   , company text
   , driver text
   , idtype text
-  , idnum text primary key
+  , idnum text
   , date text
   , harbour text
   , direction text

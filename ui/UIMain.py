@@ -162,6 +162,7 @@ def add_vehicle():
   cur.close()
   dbconn.close()
   print 'insert vehicle done'
+  sql = 'insert into vehicleinfo values (%s)'%(str(tuple(user_input)),)
   send_sql(sql)
 
 @route('/drivers')
@@ -188,6 +189,7 @@ def add_driver():
   cur.close()
   dbconn.close()
   print 'insert driver done'
+  sql = 'insert into vehicleinfo values (%s)'%(str(tuple(user_input)),)
   send_sql(sql)
 
 @route('/companies')
@@ -214,6 +216,7 @@ def add_company():
   cur.close()
   dbconn.close()
   print 'insert company done'
+  sql = 'insert into vehicleinfo values (%s)'%(str(tuple(user_input)),)
   send_sql(sql)
 
 @route('/ships')
@@ -240,6 +243,7 @@ def add_ship():
   cur.close()
   dbconn.close()
   print 'insert ship done'
+  sql = 'insert into vehicleinfo values (%s)'%(str(tuple(user_input)),)
   send_sql(sql)
 
 @route('/static/<filename:path>')

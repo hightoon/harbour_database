@@ -69,6 +69,7 @@ class ClientSockSvr(SocketServer.BaseRequestHandler):
     if self.data.startswith('sql:'):
       sql = self.data[4:].strip()
       dbconn = connect()
+      dbconn.text_factory = str
       c = dbconn.cursor()
       c.execute(sql)
       dbconn.commit()
