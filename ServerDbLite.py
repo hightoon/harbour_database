@@ -78,7 +78,7 @@ class ClientSockSvr(SocketServer.BaseRequestHandler):
       print 'table updated'
 
 def run_sock_svr():
-  HOST, PORT = socket.gethostbyname(socket.gethostname()), 9999
+  HOST, PORT = '0.0.0.0', 9999
   print 'DB started at ', HOST, PORT
   server = SocketServer.TCPServer((HOST, PORT), ClientSockSvr)
   server.serve_forever()
