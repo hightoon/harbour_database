@@ -26,20 +26,20 @@ def get_hosts():
 
 def send_sql(sql):
   HOST, PORT = '172.16.0.101', 9998
-  sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  sock1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   try:
-      sock.connect((HOST, PORT))
-      sock.sendall('sql:' + sql + "\n")
+      sock1.connect((HOST, PORT))
+      sock1.sendall('sql:' + sql + "\n")
   finally:
-      sock.close()
+      sock1.close()
 
   HOST, PORT = '172.16.0.108', 9998
-  sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  sock2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   try:
-      sock.connect((HOST, PORT))
-      sock.sendall('sql:' + sql + "\n")
+      sock2.connect((HOST, PORT))
+      sock2.sendall('sql:' + sql + "\n")
   finally:
-      sock.close()
+      sock2.close()
 
 def convert_table_value(s):
   if s == '':

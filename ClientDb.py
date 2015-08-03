@@ -111,7 +111,8 @@ class ClientSockSvr(SocketServer.BaseRequestHandler):
       print 'table updated'
 
 def run_sock_svr():
-  HOST, PORT = socket.gethostbyname(socket.gethostname()), 9998
+  #HOST, PORT = socket.gethostbyname(socket.gethostname()), 9998
+  HOST, PORT = '0.0.0.0', 9998
   print HOST, PORT
   server = SocketServer.TCPServer((HOST, PORT), ClientSockSvr)
   server.serve_forever()
