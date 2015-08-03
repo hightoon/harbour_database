@@ -62,12 +62,13 @@ def query():
 @route('/query_drivers', method='POST')
 def query_driver():
   driver_rec_hdr = (u'姓名', u'类别', u'身份证号', u'车辆', u'司机类型', u'港口', u'进出', u'照片', )
-  name = request.forms.get('name').decode('utf-8')
+  name = request.forms.get('name')
   shipname = request.forms.get('shipname')
   status = request.forms.get('status')
   print name
   #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
   dbconn = sdb.connect()
+  dbconn.text_factory = str
   cur = dbconn.cursor()
   #cur.execute("SELECT * FROM driver_rec_table WHERE DN=:drvname", {'drvname':name})
   cur.execute("SELECT * FROM driver_rec_table WHERE name=?", (name,))
@@ -81,8 +82,11 @@ def query_driver():
 
 @route('/query_vehicles', method='POST')
 def query_vehicle():
+  veh_rec_hdr = (u'车牌号', u'公司全称', u'司机', u'证件类型', u'证件号码',
+                 u'进出时间', u'港口', u'进出状态', u'司机照片', u'车辆照片')
   plate = request.forms.get('plate')
   dbconn = sdb.connect()
+  dbconn.text_factory = str
   cur = dbconn.cursor()
   cur.execute('select * from vehicle_rec_table where plate=?', (plate,))
   res = cur.fetchall()
@@ -97,6 +101,7 @@ def query_company():
   print fullname
   #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
   dbconn = sdb.connect()
+  dbconn.text_factory = str
   cur = dbconn.cursor()
   #cur.execute("SELECT * FROM company_table WHERE GSQC=:name", {'name':fullname})
   #cur.execute("SELECT * FROM company_table")
@@ -110,10 +115,11 @@ def query_company():
 
 @route('/query_vehicle_info', method='POST')
 def query_vhl_info():
-  plate = request.forms.get('plate').decode('utf-8')
+  plate = request.forms.get('plate')
   print plate
   #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
   dbconn = sdb.connect()
+  dbconn.text_factory = str
   cur = dbconn.cursor()
   cur.execute("SELECT * FROM vehicleinfo WHERE WYCPH=?", (plate,))
   res = cur.fetchall()
@@ -131,6 +137,7 @@ def query_driver_info():
   name = request.forms.get('name')
   #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
   dbconn = sdb.connect()
+  dbconn.text_factory = str
   cur = dbconn.cursor()
   cur.execute("SELECT * FROM driverinfo_use WHERE XM=?", (name,))
   #cur.execute("SELECT * FROM driverinfo")
@@ -146,6 +153,7 @@ def query_ship():
   cruise = request.forms.get('cruise')
   #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
   dbconn = sdb.connect()
+  dbconn.text_factory = str
   cur = dbconn.cursor()
   cur.execute("SELECT * FROM crs_shp_table WHERE HC=?", (cruise,))
   res = cur.fetchall()
@@ -278,7 +286,7 @@ def main():
   sdb.main()
   dbporc = Process(target=sdb.run_sock_svr, args=())
   dbporc.start()
-  websvr = Process(target=run, args=(None, 'wsgiref', '172.16.0.100', '8081'))
+  websvr = Process(target=run, args=(None, 'wsgiref', '0.0.0.0', '8081'))
   websvr.start()
   dbporc.join()
   websvr.join()
