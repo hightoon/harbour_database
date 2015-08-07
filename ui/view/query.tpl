@@ -118,7 +118,9 @@
           %for item in query_results:
             <tr>
             %for field in item:
-              <td>{{field}}</td>
+              <td>
+              <img src="{{field}}" alt="{{field}}" width="300" height="250">
+              </td>
             %end
             </tr>
           %end
