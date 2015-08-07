@@ -7,7 +7,7 @@
 import sys
 sys.path.append('..')
 
-import time, urllib2, sqlite3, re, socket
+import time, urllib2, sqlite3, re, socket, os
 #import ServerDb as sdb
 import ServerDbLite as sdb
 import SqlCmdHelper as sch
@@ -17,6 +17,29 @@ from datetime import datetime
 from subprocess import Popen
 from multiprocessing import Process
 from bottle import route, request, redirect, template,static_file, run
+from ftplib import FTP
+
+def retr_img_from_ftp(filename):
+  usr, passwd = '111111', '111111'
+  hosts = ['172.16.0.101', '172.16.0.108']
+  with open(filename, 'wb') as lf:
+    for host in hosts:
+      try:
+        ftp = FTP(host, timeout=5)
+        ftp.login(usr, passwd)
+      except Exception as e:
+        print e
+      else:
+        try:
+          ftp.retrbinary('RETR ' + filename, lf.write)
+        except Exception as e:
+          print e
+          ftp.quit()
+        else:
+          ftp.quit()
+          return True
+    return False
+      
 
 def get_hosts():
   fd = open('hosts.txt')
@@ -74,9 +97,11 @@ def query_driver():
   cur.execute("SELECT * FROM driver_rec_table WHERE name=?", (name,))
   #cur.execute("SELECT * FROM driver_rec_table")
   res = cur.fetchall()
-  print res
   cur.close()
   dbconn.close()
+  for drvrec in res:
+    if not os.path.isfile(drvrec[-1]):
+      retr_img_from_ftp(drvrec[-1])    
   return template('./view/query.tpl',
           query_results=[driver_rec_hdr]+res)
 
@@ -92,6 +117,11 @@ def query_vehicle():
   res = cur.fetchall()
   cur.close()
   dbconn.close()
+  for vhlrec in res:
+    if not os.path.isfile(vhlrec[-1]):
+      retr_img_from_ftp(vhlrec[-1])
+    if not os.path.isfile(vhlrec[-2]):
+      retr_img_from_ftp(vhlrec[-2])
   return template('./view/query.tpl',
           query_results=res)
 
@@ -281,7 +311,9 @@ def add_ship():
 def send_static(filename):
   return static_file(filename, root='./')
 
-
+def test_ftp():
+  retr_img_from_ftp('2015-08-06.csv')
+  
 def main():
   sdb.main()
   dbporc = Process(target=sdb.run_sock_svr, args=())
@@ -295,4 +327,5 @@ def main():
 
 
 if __name__ == '__main__':
-  main()
+  #main()
+  test_ftp()
