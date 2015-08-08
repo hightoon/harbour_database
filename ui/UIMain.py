@@ -39,7 +39,7 @@ def retr_img_from_ftp(filename):
           ftp.quit()
           return True
     return False
-      
+
 
 def get_hosts():
   fd = open('hosts.txt')
@@ -84,7 +84,7 @@ def query():
 
 @route('/query_drivers', method='POST')
 def query_driver():
-  driver_rec_hdr = (u'姓名', u'类别', u'身份证号', u'车辆', u'司机类型', u'港口', u'进出', u'照片', )
+  driver_rec_hdr = (u'姓名', u'类别', u'身份证号', u'车辆', u'进出时间', u'港口', u'进／出', u'照片', )
   name = request.forms.get('name')
   shipname = request.forms.get('shipname')
   status = request.forms.get('status')
@@ -101,7 +101,7 @@ def query_driver():
   dbconn.close()
   for drvrec in res:
     if not os.path.isfile(drvrec[-1]):
-      retr_img_from_ftp(drvrec[-1])    
+      retr_img_from_ftp(drvrec[-1])
   return template('./view/query.tpl',
           query_results=[driver_rec_hdr]+res)
 
@@ -110,6 +110,7 @@ def query_vehicle():
   veh_rec_hdr = (u'车牌号', u'公司全称', u'司机', u'证件类型', u'证件号码',
                  u'进出时间', u'港口', u'进出状态', u'司机照片', u'车辆照片')
   plate = request.forms.get('plate')
+  print plate
   dbconn = sdb.connect()
   dbconn.text_factory = str
   cur = dbconn.cursor()
@@ -123,7 +124,7 @@ def query_vehicle():
     if not os.path.isfile(vhlrec[-2]):
       retr_img_from_ftp(vhlrec[-2])
   return template('./view/query.tpl',
-          query_results=res)
+          query_results=[veh_rec_hdr]+res)
 
 @route('/query_company', method='POST')
 def query_company():
@@ -313,7 +314,7 @@ def send_static(filename):
 
 def test_ftp():
   retr_img_from_ftp('2015-08-06.csv')
-  
+
 def main():
   sdb.main()
   dbporc = Process(target=sdb.run_sock_svr, args=())

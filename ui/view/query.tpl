@@ -65,10 +65,6 @@
                 <span>车牌: </span>
                 <input type="text" id="plate" name="plate" />
               </label>
-              <!--label for="shipname">
-                <span>船舶名称: </span>
-                <input type="text" id="shipname" name="shipname" />
-              </label-->
           </p>
           <input type="submit" value="查询" />
         </form>
