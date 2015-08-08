@@ -22,24 +22,27 @@ from ftplib import FTP
 def retr_img_from_ftp(filename):
   usr, passwd = '111111', '111111'
   hosts = ['172.16.0.101', '172.16.0.108']
+  ret = True
+  print '从卡口电脑获取照片...'
   with open(filename, 'wb') as lf:
     for host in hosts:
       try:
-        ftp = FTP(host, timeout=5)
+        ftp = FTP(host, timeout=2)
         ftp.login(usr, passwd)
       except Exception as e:
         print e
+        ret = False
       else:
         try:
           ftp.retrbinary('RETR ' + filename, lf.write)
         except Exception as e:
           print e
+          ret = False
+        finally:
           ftp.quit()
-        else:
-          ftp.quit()
-          return True
-    return False
-
+    if not ret:
+      os.remove(filename)
+    return ret
 
 def get_hosts():
   fd = open('hosts.txt')
@@ -121,8 +124,12 @@ def query_vehicle():
   for vhlrec in res:
     if not os.path.isfile(vhlrec[-1]):
       retr_img_from_ftp(vhlrec[-1])
+    else:
+      print 'file %s existing'%vhlrec[-1]
     if not os.path.isfile(vhlrec[-2]):
       retr_img_from_ftp(vhlrec[-2])
+    else:
+      print 'file %s existing'%vhlrec[-2]
   return template('./view/query.tpl',
           query_results=[veh_rec_hdr]+res)
 
