@@ -116,7 +116,7 @@
             %for field in item:
               <td>
                 %if field.endswith("jpg") or field.endswith("JPG"):
-                  <img src="/static/./{{field}}" alt={{field}} width="280" height="200">
+                  <img src="/static/./{{field}}" alt={{field}} width="140" height="100">
                 %else:
                   {{field}}
                 %end
