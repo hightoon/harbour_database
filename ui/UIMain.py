@@ -104,7 +104,8 @@ def query_driver():
   dbconn.close()
   for drvrec in res:
     if not os.path.isfile(drvrec[-1]):
-      retr_img_from_ftp(drvrec[-1])
+      if drvrec[-1].endswith('.jpg'):  
+        retr_img_from_ftp(drvrec[-1])
   return template('./view/query.tpl',
           query_results=[driver_rec_hdr]+res)
 
@@ -123,13 +124,11 @@ def query_vehicle():
   dbconn.close()
   for vhlrec in res:
     if not os.path.isfile(vhlrec[-1]):
-      retr_img_from_ftp(vhlrec[-1])
-    else:
-      print 'file %s existing'%vhlrec[-1]
+      if vhlrec[-1].endswith('.jpg'):
+        retr_img_from_ftp(vhlrec[-1])
     if not os.path.isfile(vhlrec[-2]):
-      retr_img_from_ftp(vhlrec[-2])
-    else:
-      print 'file %s existing'%vhlrec[-2]
+      if vhlrec[-2].endswith('.jpg'):
+        retr_img_from_ftp(vhlrec[-2])
   return template('./view/query.tpl',
           query_results=[veh_rec_hdr]+res)
 
