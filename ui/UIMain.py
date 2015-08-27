@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
   Simple web server for local application management, based on bottle framework
@@ -8,7 +7,6 @@ import sys
 sys.path.append('..')
 
 import time, urllib2, sqlite3, re, socket, os
-#import ServerDb as sdb
 import ServerDbLite as sdb
 import SqlCmdHelper as sch
 import time, urllib2, sqlite3
@@ -73,6 +71,19 @@ def convert_table_value(s):
   else:
     return '\'%s\''%s
 
+def cons_query_where_clause(query_mapping):
+  conds = ['='.join([col, col]) for col in query_mapping.keys()]
+  return ' and '.join(conds)
+
+def cons_query_interval(start, end):
+  timefmt = '%Y-%m-%d'
+  try:
+    [datetime.strptime(t, timefmt) for t in (start, end)]
+  except ValueError:
+    return None
+  else:
+    return start + ' 00:00:00', end + ' 23:59:59'
+
 @route('/')
 def root():
   redirect('/index')
@@ -88,23 +99,36 @@ def query():
 @route('/query_drivers', method='POST')
 def query_driver():
   driver_rec_hdr = (u'姓名', u'类别', u'身份证号', u'车辆', u'进出时间', u'港口', u'进／出', u'照片', )
-  name = request.forms.get('name')
-  shipname = request.forms.get('shipname')
-  status = request.forms.get('status')
-  print name
+  tab_query_cols = ('name', 'cat', 'vechicle', 'harbour', 'direction')
+  query_cond = {}
+  for kw in tab_query_cols:
+    input = request.forms.get(kw)
+    if input: query_cond[kw] = input
+  where_str = cons_query_where_clause(query_cond)
+  # add query interval
+  interval = cons_query_interval(request.forms.get('start'), request.forms.get('end'))
+  if interval:
+    start, end = interval
+    query_cond['start'] = start
+    query_cond['end'] = end
+    interval_str = ' datetime(date) BETWEEN datetime(:start) and datetime(:end)'
+  else:
+    interval_str = ''
   #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
   dbconn = sdb.connect()
   dbconn.text_factory = str
   cur = dbconn.cursor()
+  print query_cond
   #cur.execute("SELECT * FROM driver_rec_table WHERE DN=:drvname", {'drvname':name})
-  cur.execute("SELECT * FROM driver_rec_table WHERE name=?", (name,))
+  cur.execute("SELECT * FROM driver_rec_table WHERE " + where_str + interval_str,
+              query_cond)
   #cur.execute("SELECT * FROM driver_rec_table")
   res = cur.fetchall()
   cur.close()
   dbconn.close()
   for drvrec in res:
     if not os.path.isfile(drvrec[-1]):
-      if drvrec[-1].endswith('.jpg'):  
+      if drvrec[-1].endswith('.jpg'):
         retr_img_from_ftp(drvrec[-1])
   return template('./view/query.tpl',
           query_results=[driver_rec_hdr]+res)

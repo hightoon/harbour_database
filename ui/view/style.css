@@ -14,8 +14,8 @@
   flex-wrap: wrap;
   display: -webkit-flex; /* Safari */
   -webkit-flex-wrap: wrap; /* Safari 6.1+ */
-  //display: -moz-box;
-  //-moz-box-wrap: wrap;
+  display: -moz-box;
+  -moz-box-wrap: wrap;
 }
 
 #page-hdr h2 {
@@ -183,22 +183,6 @@ span.company-home {
   margin: 5px 20px;
 }
 
-#host-game-control {
-  font-size: medium;
-  text-align: left;
-}
-
-#host-game-kb-ctrl {
-  font-size: medium;
-  text-align: left;
-}
-
-#price-form {
-  text-align: left;
-  margin: 5px 50px; /* top left */
-  border-right:1px solid black;
-}
-
 /*
 table {
   margin: auto;
@@ -225,9 +209,23 @@ td {
   padding: 8px;
 }
 
+input {
+  width: 120px;
+}
+
+label {
+  display: inline-block;
+  width: 250px;
+}
+
 #logout-change-password button {
   position: relative;
   top: 15px;
+}
+
+#page-hdr {
+  text-align: center;
+  align: center;
 }
 
 @media only screen and (max-width: 500px) {

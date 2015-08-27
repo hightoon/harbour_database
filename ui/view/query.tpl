@@ -27,15 +27,35 @@
           <p>
             <label for="startdate">
               <span>开始日期: </span>
-              <input type="text" id="startdate" name="startdate" />
+              <input type="text" id="startdate" name="start" placeholder="2011-01-31"/>
             </label>
             <label for="enddate">
               <span>结束日期: </span>
-              <input type="text" id="enddate" name="enddate" />
+              <input type="text" id="enddate" name="end" placeholder="2011-12-31"/>
             </label>
             <label for="name">
               <span>姓名: </span>
               <input type="text" id="name" name="name" />
+            </label>
+          </p>
+          <p>
+            <label for="vehicle">
+              <span>车辆信息: </span>
+              <input type="text" id="vehicle" name="vehicle" />
+            </label>
+            <label for="catlog">
+              <span>类别: </span>
+              <input type="text" id="catlog" name="cat" />
+            </label>
+            <label for="harbour">
+              <span>港口: </span>
+              <input type="text" id="harbour" name="harbour" />
+            </label>
+          </p>
+          <p>
+            <label for="direction">
+              <span>进出状态: </span>
+              <input type="text" id="direction" name="direction" />
             </label>
           </p>
           <p>
