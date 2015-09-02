@@ -1,26 +1,13 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>数据库管理系统</title>
-  <link rel="stylesheet" type="text/css" href="/static/view/style.css">
-</head>
+%include('./view/html_header.tpl')
 <body unresolved>
   <div id="main" class="managementpage">
     <div id="page-hdr" class="row">
       <h2>数据库管理系统</h2>
     </div>
     <div class="row">
-      <div class="col-2">
-        <ul class="block-list">
-          <li><h4><a href="/query">查询</a></h4></li>
-          <li><h4><a href="/vehicles">车辆管理</a></h4></li>
-          <li><h4><a href="/drivers">司机管理</a></h4></li>
-          <li><h4><a href="/companies">公司管理</a></h4></li>
-          <li><h4><a href="/ships">船舶管理</a></h4></li>
-          <li><h4><a href="/setting">设置</a></h4></li>
-        </ul>
-      </div>
+      % include('./view/side_nav.tpl')
       <div id="vehicle-manage-page" class="col-9">
         <h4>数据库管理 >>> 添加公司信息</h4>
         <form action="/add_company" method="POST">
