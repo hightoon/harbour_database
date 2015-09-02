@@ -10,23 +10,13 @@
 
 .managementpage {
   width: 100%;
+  height: 100%;
   display: flex;
   flex-wrap: wrap;
   display: -webkit-flex; /* Safari */
   -webkit-flex-wrap: wrap; /* Safari 6.1+ */
   display: -moz-box;
   -moz-box-wrap: wrap;
-}
-
-#page-hdr h2 {
-  text-align: center;
-}
-
-#cllxdm {
-  font-size: large;
-}
-#tw {
-  font-size: large;
 }
 
 a {
@@ -37,7 +27,16 @@ a:link{text-decoration:none;
 
 ul.block-list {
   list-style-type:none;
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
+}
+
+ul.sub-block-list {
+  list-style-type:none;
+}
+.sub-block-list>li {
+  padding: 0px;
+  margin-top: 1px;
+  margin-bottom: 1px;
 }
 
 .block-list {
@@ -46,27 +45,19 @@ ul.block-list {
 
 .block-list>li {
   border-bottom-width: 1px;
-  padding: 8px;
+  padding: 5px;
 }
 
-.notif-header {
-  align: center;
-  text-align: center;
+.nav-item {
+  font-size: 16px;
+  margin-top: 12px;
+  margin-bottom: 12px;
 }
 
-.notif-text-body {
-  text-align: left;
-}
-
-.cmnpy-home {
-  text-align: center;
-  font-style: italic;
-}
-
-span.company-home {
-  color: blue;
-  font-size: large;
-  font-weight: bold;
+.sub-nav-item {
+  font-size: 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .row {
@@ -78,6 +69,12 @@ span.company-home {
   /*-moz-box-wrap: wrap;*/
 }
 
+.form-control {
+  width: 250px;
+}
+#login-but {
+  width: 250px;
+}
 .col-1 {
   width: 8.33%;
 }
@@ -88,7 +85,9 @@ span.company-home {
   border-right:1px solid blue;
   background-color: #0066cc;
   color: white;
+  background-size: 100% 100%;
 }
+
 
 .col-3 {
   width: 25%;
@@ -126,6 +125,9 @@ span.company-home {
   /*text-align: center;*/
   border-top:2px solid #0066cc;
   padding: 32px !important;
+  background-size: 100% 100%;
+  height: 800px;
+  overflow: scroll;
 }
 
 .col-11 {
@@ -135,6 +137,10 @@ span.company-home {
 .col-12 {
   width: 100%;
   text-align: center;
+}
+
+.role-mng-table a {
+  color: black;
 }
 
 #welcome-bar {
@@ -183,6 +189,22 @@ span.company-home {
   margin: 5px 20px;
 }
 
+#login-header {
+  margin-left: 30%;
+  margin-bottom:150px;
+}
+
+#side-nav-bar {
+  height: 800px;
+}
+
+#user-submit-setting {
+  color: black;
+}
+
+#grant-role-choice {
+  background-color: #00ccff;
+}
 /*
 table {
   margin: auto;
@@ -209,13 +231,24 @@ td {
   padding: 8px;
 }
 
-input {
+#vehicle-manage-page input {
+  width: 120px;
+}
+
+select {
   width: 120px;
 }
 
 label {
   display: inline-block;
   width: 250px;
+  margin-top: 5px;
+}
+
+.role-mng-table th,td {
+  width: 200px;
+  background-color: #00ccff;
+  font-color: white;
 }
 
 #logout-change-password button {
@@ -224,8 +257,9 @@ label {
 }
 
 #page-hdr {
-  text-align: center;
-  align: center;
+  margin-left: 40%;
+  font-size: 20px;
+  font-family: sans-serif;
 }
 
 @media only screen and (max-width: 500px) {
