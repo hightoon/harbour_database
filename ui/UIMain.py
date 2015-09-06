@@ -16,12 +16,28 @@ import SqlCmdHelper
 from datetime import datetime
 from subprocess import Popen
 from multiprocessing import Process
-from bottle import route, request, redirect, template,static_file, run
+from bottle import route, request, redirect, template,static_file, run, app, hook
 from ftplib import FTP
+from beaker.middleware import SessionMiddleware
 import UserDb
 
-act_user = None
 
+session_opts = {
+    'session.type': 'file',
+    'session.cookie_expires': 300,
+    'session.data_dir': './data',
+    'session.auto': True
+}
+app = SessionMiddleware(app(), session_opts)
+
+def set_act_user(usrname):
+  request.session['logged_in'] = usrname
+
+def get_act_user():
+  if 'logged_in' in request.session:
+    return request.session['logged_in']
+  else:
+    return None
 
 def retr_img_from_ftp(filename):
   usr, passwd = '111111', '111111'
@@ -94,19 +110,24 @@ def cons_query_interval(start, end):
 def validate_from_db(usr, passwd):
   user = UserDb.get(usr)
   if user is not None and user.usrname == usr and user.password == passwd:
-    ret = True, user.is_admin
+    ret = True, user
   else:
-    ret = False, UserDb.User.NOT_ADMIN
+    ret = False, user
   return ret
 
 def init_db():
   UserDb.create_user_table()
   UserDb.create_role_table()
+  UserDb.add_root()
   UserDb.put_admin()
+
+@hook('before_request')
+def setup_request():
+    request.session = request.environ['beaker.session']
 
 @route('/')
 def root():
-  if act_user is None:
+  if get_act_user() is None:
     redirect('/login')
   else:
     redirect('/index')
@@ -122,20 +143,18 @@ def do_login():
   forgot = None
   username = request.forms.get('username')
   password = request.forms.get('password')
-  print username, password
 
-  isvalid, isadmin = validate_from_db(username, password)
-  print isvalid, isadmin
+  isvalid, user = validate_from_db(username, password)
   if isvalid:
-    act_user = UserDb.User(username, password, isadmin)
+    #act_user = user
+    set_act_user(username)
     redirect('/index')
   else:
     redirect('/')
 
 @route('/logout')
 def logout():
-  global act_user
-  act_user = None
+  request.session.delete()
   redirect('/')
 
 @route('/index')
@@ -144,26 +163,40 @@ def page_index():
 
 @route('/query')
 def query_home():
+  act_user = get_act_user()
   if act_user is None:
     redirect('/')
-  return template('./view/query.tpl', query_results=[], query_tbl='')
+  privs = UserDb.get_privilege(UserDb.get(act_user).role)
+  return template('./view/query.tpl', query_results=[], query_tbl='', privs=privs)
 
 @route('/query_driver_recs')
 def query():
+  act_user = get_act_user()
   if act_user is None:
     redirect('/')
-  return template('./view/query.tpl', query_results=[], query_tbl='driver_recs')
+  act_user = UserDb.get(act_user)
+  stations = sdb.get_stations_from_driver_recs()
+  stations = list(set(stations))
+  return template('./view/query.tpl', query_results=[], query_tbl='driver_recs',
+                  stations=stations, privs=UserDb.get_privilege(act_user.role))
 
 @route('/query_vehicle_recs')
 def query():
+  act_user = get_act_user()
   if act_user is None:
     redirect('/')
-  return template('./view/query.tpl', query_results=[], query_tbl='vehicle_recs')
+  act_user = UserDb.get(act_user)
+  return template('./view/query.tpl', query_results=[], query_tbl='vehicle_recs',
+                  privs=UserDb.get_privilege(act_user.role))
 
 @route('/query_drivers', method='POST')
 def query_driver():
-  driver_rec_hdr = (u'姓名', u'类别', u'身份证号', u'车辆', u'进出时间', u'港口', u'进出状态', u'照片', )
-  tab_query_cols = ('name', 'cat', 'vechicle', 'harbour', 'direction')
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  driver_rec_hdr = (u'姓名', u'类别', u'身份证号', u'车辆', u'进出时间', u'边检站', u'港口', u'进出状态', u'照片', )
+  tab_query_cols = ('name', 'cat', 'vechicle', 'station', 'harbour', 'direction')
   query_cond = {}
   for kw in tab_query_cols:
     input = request.forms.get(kw)
@@ -195,10 +228,16 @@ def query_driver():
       if drvrec[-1].endswith('.jpg'):
         retr_img_from_ftp(drvrec[-1])
   return template('./view/query.tpl',
-          query_results=[driver_rec_hdr]+res, query_tbl='driver_recs')
+          query_results=[driver_rec_hdr]+res, query_tbl='driver_recs',
+          stations=list(set(sdb.get_stations_from_driver_recs())),
+          privs=UserDb.get_privilege(act_user.role))
 
 @route('/query_vehicles', method='POST')
 def query_vehicle():
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
   veh_rec_hdr = (u'车牌号', u'公司全称', u'司机', u'证件类型', u'证件号码',
                  u'进出时间', u'港口', u'进出状态', u'司机照片', u'车辆照片')
   tab_query_cols = ('plate', 'idnum', 'direction')
@@ -236,10 +275,15 @@ def query_vehicle():
       if vhlrec[-2].endswith('.jpg'):
         retr_img_from_ftp(vhlrec[-2])
   return template('./view/query.tpl',
-          query_results=[veh_rec_hdr]+res, query_tbl='vehicle_recs')
+          query_results=[veh_rec_hdr]+res, query_tbl='vehicle_recs',
+          privs=UserDb.get_privilege(act_user.role))
 
 @route('/query_company', method='POST')
 def query_company():
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
   fullname = request.forms.get('fullname')
   print fullname
   #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
@@ -254,10 +298,15 @@ def query_company():
   cur.close()
   dbconn.close()
   return template('./view/query.tpl',
-          query_results=res, query_tbl='company')
+          query_results=res, query_tbl='company',
+          privs=UserDb.get_privilege(act_user.role))
 
 @route('/query_vehicle_info', method='POST')
 def query_vhl_info():
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
   plate = request.forms.get('plate')
   print plate
   #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
@@ -273,10 +322,15 @@ def query_vhl_info():
   cur.close()
   dbconn.close()
   return template('./view/query.tpl',
-          query_results=res, query_tbl='vehicle')
+          query_results=res, query_tbl='vehicle',
+          privs=UserDb.get_privilege(act_user.role))
 
 @route('/query_driver_info', method='POST')
 def query_driver_info():
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
   name = request.forms.get('name')
   #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
   dbconn = sdb.connect()
@@ -289,10 +343,15 @@ def query_driver_info():
   cur.close()
   dbconn.close()
   return template('./view/query.tpl',
-          query_results=res, query_tbl='driver')
+          query_results=res, query_tbl='driver',
+          privs=UserDb.get_privilege(act_user.role))
 
 @route('/query_ship', method='POST')
 def query_ship():
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
   cruise = request.forms.get('cruise')
   #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
   dbconn = sdb.connect()
@@ -304,11 +363,16 @@ def query_ship():
   cur.close()
   dbconn.close()
   return template('./view/query.tpl',
-          query_results=res, query_tbl='ship')
+          query_results=res, query_tbl='ship',
+          privs=UserDb.get_privilege(act_user.role))
 
 @route('/vehicles')
 def add_vehicle():
-  return template('./view/vehicle.tpl')
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  return template('./view/vehicle.tpl', privs=UserDb.get_privilege(act_user.role))
 
 @route('/add_vehicle', method='POST')
 def add_vehicle():
@@ -338,7 +402,11 @@ def add_vehicle():
 
 @route('/drivers')
 def add_driver():
-  return template('./view/driver.tpl')
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  return template('./view/driver.tpl', privs=UserDb.get_privilege(act_user.role))
 
 @route('/add_driver', method='POST')
 def add_driver():
@@ -366,7 +434,11 @@ def add_driver():
 
 @route('/companies')
 def add_company():
-  return template('./view/company.tpl')
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  return template('./view/company.tpl', privs=UserDb.get_privilege(act_user.role))
 
 @route('/add_company', method='POST')
 def add_company():
@@ -394,7 +466,11 @@ def add_company():
 
 @route('/ships')
 def add_ship():
-  return template('./view/ship.tpl')
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  return template('./view/ship.tpl', privs=UserDb.get_privilege(act_user.role))
 
 @route('/add_ship', method='POST')
 def add_ship():
@@ -422,15 +498,19 @@ def add_ship():
 
 @route('/user_roles')
 def role_mng():
+  act_user = get_act_user()
   if act_user is None:
     redirect('/')
+  act_user = UserDb.get(act_user)
   return template('./view/setting.tpl', setting='role_mng',
-                  roles=UserDb.get_roles())
+                  roles=UserDb.get_roles(), privs=UserDb.get_privilege(act_user.role))
 
 @route('/add_role', method='POST')
 def add_role():
+  act_user = get_act_user()
   if act_user is None:
     redirect('/')
+  act_user = UserDb.get(act_user)
   rolename = request.forms.get('rn')
   op = request.forms.get('create')
   if op and rolename:
@@ -445,63 +525,84 @@ def add_role():
 
 @route('/del_role/<rolename>')
 def del_role(rolename):
+  act_user = get_act_user()
   if act_user is None:
     redirect('/')
+  act_user = UserDb.get(act_user)
   UserDb.del_role(rolename)
   return rolename, '已删除'
 
 @route('/access_control')
 def access_control():
+  act_user = get_act_user()
   if act_user is None:
     redirect('/')
+  act_user = UserDb.get(act_user)
   return template('./view/setting.tpl', setting='access_granting',
-                  roles=UserDb.get_roles())
+                  roles=UserDb.get_roles(), privs=UserDb.get_privilege(act_user.role))
 
 @route('/access_grant', method='POST')
 def grant():
+  act_user = get_act_user()
   if act_user is None:
     redirect('/')
-  webacc = request.forms.get('web')
-  if webacc: print 'web access'
-  sysacc = request.forms.get('sys')
-  if sysacc: print 'sys access'
-  query = request.forms.get('query')
-  if query: print 'query'
-  grnt = request.forms.get('grant')
-  print grnt
+  act_user = UserDb.get(act_user)
+  privs = ['sys', 'query', 'vehicle', 'driver', 'company', 'ship']
+  granted = []
+  for priv in privs:
+    if request.forms.get(priv):
+      granted.append(priv)
+  role = request.forms.get('grant')
+  print role
+  UserDb.update_privilege(role, granted)
 
 @route('/account_mngn')
 def account_mngn():
+  act_user = get_act_user()
   if act_user is None:
     redirect('/')
+  act_user = UserDb.get(act_user)
   users = UserDb.fetch_users()
   return template('./view/setting.tpl', setting='accounts',
-                  users=users)
+                  users=users, privs=UserDb.get_privilege(act_user.role))
 
 @route('/del_user/<usrname>', method='POST')
 def del_user(usrname):
+  act_user = get_act_user()
   if act_user is None:
     redirect('/')
+  act_user = UserDb.get(act_user)
   UserDb.del_user(usrname)
   redirect('/account_mngn')
 
 @route('/account_query', method="POST")
 def account_query():
-  if act_user is None: redirect('/')
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
   user = request.forms.get('account')
   if request.forms.get('query'):
-    return template('./view/setting.tpl', setting="accounts", users=[UserDb.get(user)])
+    return template('./view/setting.tpl', setting="accounts", users=[UserDb.get(user)],
+                    privs=UserDb.get_privilege(act_user.role))
   elif request.forms.get('create'):
     redirect('/user_update')
 
 @route('/user_update')
 def update_user():
-  if act_user is None: redirect('/')
-  return template('./view/setting.tpl', setting="adduser")
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  return template('./view/setting.tpl', setting="adduser", roles=UserDb.get_roles(),
+                    privs=UserDb.get_privilege(act_user.role))
 
 @route('/update_user', method='POST')
 def update_user():
-  if act_user is None: redirect('/')
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
   usrname = request.forms.get('usrname')
   passwd  = request.forms.get('passwd')
   role    = request.forms.get('role')
@@ -514,18 +615,28 @@ def update_user():
 
 @route('/del_user/<usrname>')
 def del_user(usrname):
-  if act_user is None: redirect('/')
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
   UserDb.del_user(usrname)
   redirect('/account_mngn')
 
 @route('/change_passwd')
 def change_passwd():
-  if act_user is None: redirect('/')
-  return template('./view/setting.tpl', setting="change_password")
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  return template('./view/setting.tpl', setting="change_password",
+                  privs=UserDb.get_privilege(act_user.role))
 
 @route('/change_passwd', method='POST')
 def update_passwd():
-  if act_user is None: redirect('/')
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
   passwd = request.forms.get('newpass')
   cnfm_passwd = request.forms.get('confirmedpass')
   if passwd != cnfm_passwd:
@@ -540,12 +651,13 @@ def send_static(filename):
 def test_ftp():
   retr_img_from_ftp('2015-08-06.csv')
 
+
 def main():
   sdb.main()
   init_db()
   dbporc = Process(target=sdb.run_sock_svr, args=())
   dbporc.start()
-  websvr = Process(target=run, args=(None, 'wsgiref', '0.0.0.0', '8081'))
+  websvr = Process(target=run, args=(app, 'wsgiref', '0.0.0.0', '8081'))
   websvr.start()
   dbporc.join()
   websvr.join()
