@@ -57,6 +57,15 @@ def drop_all():
   for tn in sqlite_cmds.keys():
     drop_table(tn)
 
+def get_stations_from_driver_recs():
+  conn = connect()
+  conn.text_factory = str
+  cur = conn.cursor()
+  res = cur.execute('SELECT station FROM driver_rec_table').fetchall()
+  cur.close()
+  conn.close()
+  return res
+
 class ClientSockSvr(SocketServer.BaseRequestHandler):
   def handle(self):
     # self.request is the TCP socket connected to the client

@@ -521,7 +521,7 @@ sql_cmds = {
       PRIMARY KEY (ZJHM, ZJLBDM, GJDQDM)
     )
     ''',
-    
+
     'create_driver_info_use_table':\
     '''
     CREATE TABLE driverinfo_use
@@ -839,15 +839,15 @@ sql_cmds = {
     'create_driver_rec_table':\
     '''
     CREATE TABLE driver_rec_table
-    ( DN	 	VARCHAR2(10 BYTE)  
-    , CAT 	VARCHAR2(20 BYTE)  
-    , ID 		VARCHAR2(20 BYTE)  
-    , VCHL 	VARCHAR2(20 BYTE) 
-    , DT	 	VARCHAR2(20 BYTE) 
-    , HAR		VARCHAR2(15 BYTE) 
-    , DIRCT VARCHAR2(15 BYTE) 
+    ( DN	 	VARCHAR2(10 BYTE)
+    , CAT 	VARCHAR2(20 BYTE)
+    , ID 		VARCHAR2(20 BYTE)
+    , VCHL 	VARCHAR2(20 BYTE)
+    , DT	 	VARCHAR2(20 BYTE)
+    , HAR		VARCHAR2(15 BYTE)
+    , DIRCT VARCHAR2(15 BYTE)
     , PIC 	VARCHAR2(20 BYTE)
-    ) 
+    )
     ''',
 
     'create_vechicle_rec_table':\
@@ -929,7 +929,7 @@ sql_table_columns = {
   , QZH
   , TLQ)
   ''',
-  
+
   'driverinfo_use': \
   '''
   ( TLQ
@@ -1084,7 +1084,7 @@ sqlite_cmds = {
     TLQ       text
   )
   ''',
-  
+
   'driverinfo_use': \
   '''
     ( TLQ     text
@@ -1320,6 +1320,7 @@ sqlite_cmds = {
   , vechicle text
   , date text
   , harbour text
+  , station text
   , direction text
   , pic text
   )
