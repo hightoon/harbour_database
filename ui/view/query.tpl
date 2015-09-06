@@ -33,19 +33,41 @@
               </label>
               <label for="catlog">
                 <span>类别: </span>
-                <input type="text" id="catlog" name="cat" />
+                <select id="catlog" name="cat">
+                  <option value="临时登轮证">临时登轮证</option>
+                  <option value="船员登陆证">船员登陆证</option>
+                  <option value="台湾船员登陆证">台湾船员登陆证</option>
+                  <option value="临时入境许可">临时入境许可</option>
+                  <option value="随船工作证">随船工作证</option>
+                  <option value="海员证">海员证</option>
+                  <option value="">全部</option>
+                </select>
               </label>
               <label for="harbour">
                 <span>港口: </span>
-                <input type="text" id="harbour" name="harbour" />
+                  <select id="harbour" name="harbour">
+                    <option value="横沙渔港">横沙渔港</option>
+                    <option value="">全部</option>
+                  </select>
               </label>
             </p>
             <p>
+              <label for="station">
+                <span>边检站: </span>
+                <select id="station" name="station">
+                    <option value="崇明边检站">崇明边检站</option>
+                    <option value="">全部</option>
+                </select>
+              </label>
               <label for="direction">
                 <span>进出状态: </span>
                 <select id="direction" name="direction">
                   <option value="进门">进门</option>
                   <option value="出门">出门</option>
+                  <option value="连续两次进门">连续两次进门</option>
+                  <option value="连续两次出门">连续两次出门</option>
+                  <option value="第一次非法进门">第一次非法进门</option>
+                  <option value="第一次非法出门">第一次非法出门</option>
                   <option value="">全部</option>
                 </select>
               </label>

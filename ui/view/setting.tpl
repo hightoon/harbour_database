@@ -47,7 +47,7 @@
           </table>
         %elif setting == "access_granting":
           <h4>系统管理 >>> 角色管理</h4>
-          <form action="access_grant" method="POST">
+          <form action="/access_grant" method="POST">
             <div class="row" id="role-access-grant">
               <div class="col-8" id="grant-role-choice">
                 <label>选择角色:
@@ -67,7 +67,7 @@
                 <li><input type="checkbox" name="web"><span>边检网站系统</span>
                   <ul>
                     <li><input type="checkbox" name="sys"><span>系统管理</span></li>
-                    <li><input type="checkbox" name="basic"><span>基础设置</span></li>
+                    <!--li><input type="checkbox" name="basic"><span>基础设置</span></li-->
                     <li><input type="checkbox" name="query"><span>查询</span></li>
                     <li><input type="checkbox" name="vehicle"><span>车辆管理</span></li>
                     <li><input type="checkbox" name="driver"><span>司机管理</span></li>
@@ -130,7 +130,12 @@
               <input type="password" id="passwd" name="passwd" required />
             </label>
             <label for="role"><span>角色:</span>
-              <input type="text" id="role" name="role" required />
+              <!--input type="text" id="role" name="role" required /-->
+              <select id="role" name="role">
+                %for r in roles:
+                  <option value="{{r[0]}}">{{r[0]}}</option>
+                %end
+              </select>
             </label>
             <label for="desc"><span>备注:</span>
               <input type="text" id="desc" name="desc" />
