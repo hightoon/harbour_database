@@ -1322,6 +1322,7 @@ sqlite_cmds = {
   , harbour text
   , station text
   , direction text
+  , alarm text
   , pic text
   )
   ''',

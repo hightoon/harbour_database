@@ -24,7 +24,7 @@ import UserDb
 
 session_opts = {
     'session.type': 'file',
-    'session.cookie_expires': 300,
+    'session.cookie_expires': 3600,
     'session.data_dir': './data',
     'session.auto': True
 }
@@ -167,7 +167,8 @@ def query_home():
   if act_user is None:
     redirect('/')
   privs = UserDb.get_privilege(UserDb.get(act_user).role)
-  return template('./view/query.tpl', query_results=[], query_tbl='', privs=privs)
+  return template('./view/query.tpl', query_results=[], query_tbl='',
+                  privs=privs, curr_user=get_act_user())
 
 @route('/query_driver_recs')
 def query():
@@ -178,7 +179,8 @@ def query():
   stations = sdb.get_stations_from_driver_recs()
   stations = list(set(stations))
   return template('./view/query.tpl', query_results=[], query_tbl='driver_recs',
-                  stations=stations, privs=UserDb.get_privilege(act_user.role))
+                  stations=stations, privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user())
 
 @route('/query_vehicle_recs')
 def query():
@@ -187,7 +189,8 @@ def query():
     redirect('/')
   act_user = UserDb.get(act_user)
   return template('./view/query.tpl', query_results=[], query_tbl='vehicle_recs',
-                  privs=UserDb.get_privilege(act_user.role))
+                  privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user())
 
 @route('/query_drivers', method='POST')
 def query_driver():
@@ -195,8 +198,8 @@ def query_driver():
   if act_user is None:
     redirect('/')
   act_user = UserDb.get(act_user)
-  driver_rec_hdr = (u'姓名', u'类别', u'身份证号', u'车辆', u'进出时间', u'边检站', u'港口', u'进出状态', u'照片', )
-  tab_query_cols = ('name', 'cat', 'vechicle', 'station', 'harbour', 'direction')
+  driver_rec_hdr = (u'姓名', u'类别', u'身份证号', u'车辆', u'进出时间', u'边检站', u'港口', u'进出状态', u'报警状态', u'照片', )
+  tab_query_cols = ('name', 'cat', 'vechicle', 'station', 'harbour', 'direction', 'alarm')
   query_cond = {}
   for kw in tab_query_cols:
     input = request.forms.get(kw)
@@ -230,7 +233,8 @@ def query_driver():
   return template('./view/query.tpl',
           query_results=[driver_rec_hdr]+res, query_tbl='driver_recs',
           stations=list(set(sdb.get_stations_from_driver_recs())),
-          privs=UserDb.get_privilege(act_user.role))
+          privs=UserDb.get_privilege(act_user.role),
+          curr_user=get_act_user())
 
 @route('/query_vehicles', method='POST')
 def query_vehicle():
@@ -276,7 +280,8 @@ def query_vehicle():
         retr_img_from_ftp(vhlrec[-2])
   return template('./view/query.tpl',
           query_results=[veh_rec_hdr]+res, query_tbl='vehicle_recs',
-          privs=UserDb.get_privilege(act_user.role))
+          privs=UserDb.get_privilege(act_user.role),
+          curr_user=get_act_user())
 
 @route('/query_company', method='POST')
 def query_company():
@@ -299,7 +304,8 @@ def query_company():
   dbconn.close()
   return template('./view/query.tpl',
           query_results=res, query_tbl='company',
-          privs=UserDb.get_privilege(act_user.role))
+          privs=UserDb.get_privilege(act_user.role),
+          curr_user=get_act_user())
 
 @route('/query_vehicle_info', method='POST')
 def query_vhl_info():
@@ -323,7 +329,8 @@ def query_vhl_info():
   dbconn.close()
   return template('./view/query.tpl',
           query_results=res, query_tbl='vehicle',
-          privs=UserDb.get_privilege(act_user.role))
+          privs=UserDb.get_privilege(act_user.role),
+          curr_user=get_act_user())
 
 @route('/query_driver_info', method='POST')
 def query_driver_info():
@@ -344,7 +351,8 @@ def query_driver_info():
   dbconn.close()
   return template('./view/query.tpl',
           query_results=res, query_tbl='driver',
-          privs=UserDb.get_privilege(act_user.role))
+          privs=UserDb.get_privilege(act_user.role),
+          curr_user=get_act_user())
 
 @route('/query_ship', method='POST')
 def query_ship():
@@ -364,7 +372,8 @@ def query_ship():
   dbconn.close()
   return template('./view/query.tpl',
           query_results=res, query_tbl='ship',
-          privs=UserDb.get_privilege(act_user.role))
+          privs=UserDb.get_privilege(act_user.role),
+          curr_user=get_act_user())
 
 @route('/vehicles')
 def add_vehicle():
@@ -372,7 +381,8 @@ def add_vehicle():
   if act_user is None:
     redirect('/')
   act_user = UserDb.get(act_user)
-  return template('./view/vehicle.tpl', privs=UserDb.get_privilege(act_user.role))
+  return template('./view/vehicle.tpl', privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user())
 
 @route('/add_vehicle', method='POST')
 def add_vehicle():
@@ -438,7 +448,9 @@ def add_company():
   if act_user is None:
     redirect('/')
   act_user = UserDb.get(act_user)
-  return template('./view/company.tpl', privs=UserDb.get_privilege(act_user.role))
+  return template('./view/company.tpl',
+                  privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user())
 
 @route('/add_company', method='POST')
 def add_company():
@@ -470,7 +482,8 @@ def add_ship():
   if act_user is None:
     redirect('/')
   act_user = UserDb.get(act_user)
-  return template('./view/ship.tpl', privs=UserDb.get_privilege(act_user.role))
+  return template('./view/ship.tpl', privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user())
 
 @route('/add_ship', method='POST')
 def add_ship():
@@ -503,7 +516,9 @@ def role_mng():
     redirect('/')
   act_user = UserDb.get(act_user)
   return template('./view/setting.tpl', setting='role_mng',
-                  roles=UserDb.get_roles(), privs=UserDb.get_privilege(act_user.role))
+                  roles=UserDb.get_roles(),
+                  privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user())
 
 @route('/add_role', method='POST')
 def add_role():
@@ -532,6 +547,28 @@ def del_role(rolename):
   UserDb.del_role(rolename)
   return rolename, '已删除'
 
+@route('/edit_role/<rolename>')
+def edit_role(rolename):
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  return template('./view/setting.tpl', setting='edit_role',
+                  roles=UserDb.get_roles(), privs=UserDb.get_privilege(act_user.role),
+                  role2edit=rolename, curr_user=get_act_user())
+
+@route('/edit_role/<rolename>', method='POST')
+def edit_role(rolename):
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  desc = request.forms.get('desc')
+  status = request.forms.get('status')
+  print desc, status, rolename
+  UserDb.update_role_status_desc(rolename, status, desc)
+  redirect('/user_roles')
+
 @route('/access_control')
 def access_control():
   act_user = get_act_user()
@@ -539,7 +576,9 @@ def access_control():
     redirect('/')
   act_user = UserDb.get(act_user)
   return template('./view/setting.tpl', setting='access_granting',
-                  roles=UserDb.get_roles(), privs=UserDb.get_privilege(act_user.role))
+                  roles=UserDb.get_roles(),
+                  privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user())
 
 @route('/access_grant', method='POST')
 def grant():
@@ -564,7 +603,9 @@ def account_mngn():
   act_user = UserDb.get(act_user)
   users = UserDb.fetch_users()
   return template('./view/setting.tpl', setting='accounts',
-                  users=users, privs=UserDb.get_privilege(act_user.role))
+                  users=users,
+                  privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user(),)
 
 @route('/del_user/<usrname>', method='POST')
 def del_user(usrname):
@@ -575,6 +616,30 @@ def del_user(usrname):
   UserDb.del_user(usrname)
   redirect('/account_mngn')
 
+@route('/edit_user/<usrname>')
+def edit_user(usrname):
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  return template('./view/setting.tpl', setting='edit_user',
+                  privs=UserDb.get_privilege(act_user.role),
+                  usrname=usrname, roles=UserDb.get_roles(),
+                  curr_user=get_act_user())
+
+@route('/edit_user/<usrname>', method='POST')
+def edit_user(usrname):
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  nickname = request.forms.get('nickname')
+  desc = request.forms.get('desc')
+  role = request.forms.get('role')
+  print usrname, nickname, desc, role
+  UserDb.change_user_info(usrname, desc, role, nickname)
+  redirect('/account_mngn')
+
 @route('/account_query', method="POST")
 def account_query():
   act_user = get_act_user()
@@ -583,8 +648,10 @@ def account_query():
   act_user = UserDb.get(act_user)
   user = request.forms.get('account')
   if request.forms.get('query'):
-    return template('./view/setting.tpl', setting="accounts", users=[UserDb.get(user)],
-                    privs=UserDb.get_privilege(act_user.role))
+    return template('./view/setting.tpl', setting="accounts",
+                    users=[UserDb.get(user)],
+                    privs=UserDb.get_privilege(act_user.role),
+                    curr_user=get_act_user())
   elif request.forms.get('create'):
     redirect('/user_update')
 
@@ -594,8 +661,10 @@ def update_user():
   if act_user is None:
     redirect('/')
   act_user = UserDb.get(act_user)
-  return template('./view/setting.tpl', setting="adduser", roles=UserDb.get_roles(),
-                    privs=UserDb.get_privilege(act_user.role))
+  return template('./view/setting.tpl', setting="adduser",
+                  roles=UserDb.get_roles(),
+                  privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user())
 
 @route('/update_user', method='POST')
 def update_user():
@@ -629,7 +698,8 @@ def change_passwd():
     redirect('/')
   act_user = UserDb.get(act_user)
   return template('./view/setting.tpl', setting="change_password",
-                  privs=UserDb.get_privilege(act_user.role))
+                  privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user())
 
 @route('/change_passwd', method='POST')
 def update_passwd():

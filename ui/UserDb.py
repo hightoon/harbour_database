@@ -129,6 +129,16 @@ def fetch_users():
     users.append(User(username, passwd, isadmin, nickname, desc, role, status, regts))
   return users
 
+def change_user_info(usr, desc, role, nickname):
+  conn =  sqlite3.connect(User.db_file)
+  conn.text_factory = str
+  cur = conn.cursor()
+  userinfo = cur.execute('UPDATE users SET des=?,role=?,nickname=? WHERE name=?',
+                         (desc, role, nickname, usr))
+  conn.commit()
+  cur.close()
+  conn.close()
+
 def change_passwd(u, p):
   conn =  sqlite3.connect(User.db_file)
   conn.text_factory = str
@@ -201,13 +211,22 @@ def update_privilege(rn, priv):
   cur.close()
   conn.close()
 
+def update_role_status_desc(rn, status, desc):
+  conn =  sqlite3.connect(Role.dbfile)
+  conn.text_factory = str
+  cur = conn.cursor()
+  cur.execute('UPDATE roles SET status=?, des=? WHERE rolename=?', (status, desc, rn,))
+  conn.commit()
+  cur.close()
+  conn.close()
+
 def get_privilege(rn):
   conn =  sqlite3.connect(Role.dbfile)
   conn.text_factory = str
   cur = conn.cursor()
   p = cur.execute('SELECT * FROM roles WHERE rolename=?', (rn,)).fetchone()
-  print p
-  if p: return p[1].split()
+
+  if p and p[2]=='启用': return p[1].split()
   else: return []
 
 def get_roles():
