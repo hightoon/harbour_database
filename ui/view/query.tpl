@@ -3,11 +3,9 @@
 %include('./view/html_header.tpl')
 <body unresolved>
   <div id="main" class="managementpage">
-    <div id="page-hdr" class="row">
-      <h2>数据库管理系统</h2>
-    </div>
+    %include('./view/page_head.tpl')
     <div class="row">
-      % include ("./view/side_nav.tpl")
+      % include ("./view/expanding_side_nav.tpl")
       <div id="query-page" class="col-10">
         %if query_tbl == 'driver_recs':
           <h4 id="query-drivers">查询 >>> 人员进出纪录</h4>
@@ -40,14 +38,14 @@
                   <option value="临时入境许可">临时入境许可</option>
                   <option value="随船工作证">随船工作证</option>
                   <option value="海员证">海员证</option>
-                  <option value="">全部</option>
+                  <option value="" selected>全部</option>
                 </select>
               </label>
               <label for="harbour">
                 <span>港口: </span>
                   <select id="harbour" name="harbour">
                     <option value="横沙渔港">横沙渔港</option>
-                    <option value="">全部</option>
+                    <option value="" selected>全部</option>
                   </select>
               </label>
             </p>
@@ -56,7 +54,7 @@
                 <span>边检站: </span>
                 <select id="station" name="station">
                     <option value="崇明边检站">崇明边检站</option>
-                    <option value="">全部</option>
+                    <option value="" selected>全部</option>
                 </select>
               </label>
               <label for="direction">
@@ -68,7 +66,18 @@
                   <option value="连续两次出门">连续两次出门</option>
                   <option value="第一次非法进门">第一次非法进门</option>
                   <option value="第一次非法出门">第一次非法出门</option>
-                  <option value="">全部</option>
+                  <option value="" selected>全部</option>
+                </select>
+              </label>
+              <label for="alarm">
+                <span>报警状态:</span>
+                <select id="alarm" name="alarm">
+                  <option value="连续两次进门">连续两次进门</option>
+                  <option value="连续两次出门">连续两次出门</option>
+                  <option value="第一次非法进门">第一次非法进门</option>
+                  <option value="第一次非法出门">第一次非法出门</option>
+                  <option value="船舶离港报警">船舶离港报警</option>
+                  <option value="" selected>全部</option>
                 </select>
               </label>
             </p>
@@ -101,7 +110,7 @@
                 <select id="direction" name="direction">
                   <option value="进门">进门</option>
                   <option value="出门">出门</option>
-                  <option value="">全部</option>
+                  <option value="" selected>全部</option>
                 </select>
               </label>
           </p>
@@ -173,6 +182,12 @@
     </div>
   </div>
   <script type="text/javascript">
+  $(function() {
+    $( "#startdate" ).datepicker();
+    $( "#enddate" ).datepicker();
+    $( "#start" ).datepicker();
+    $( "#end" ).datepicker();
+  });
   </script>
 </body>
 </html>

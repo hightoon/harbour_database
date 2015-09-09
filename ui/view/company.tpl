@@ -3,12 +3,10 @@
 %include('./view/html_header.tpl')
 <body unresolved>
   <div id="main" class="managementpage">
-    <div id="page-hdr" class="row">
-      <h2>数据库管理系统</h2>
-    </div>
+    %include('./view/page_head.tpl')
     <div class="row">
-      % include('./view/side_nav.tpl')
-      <div id="vehicle-manage-page" class="col-9">
+      % include('./view/expanding_side_nav.tpl')
+      <div id="vehicle-manage-page" class="col-10">
         <h4>数据库管理 >>> 添加公司信息</h4>
         <form action="/add_company" method="POST">
           <p>尾部带<strong><abbr title="required">*</abbr></strong>为必填项。</p>

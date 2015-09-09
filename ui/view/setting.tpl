@@ -3,12 +3,10 @@
 %include('./view/html_header.tpl')
 <body>
   <div id="main" class="managementpage">
-    <div id="page-hdr" class="row">
-      <h2>数据库管理系统</h2>
-    </div>
+    %include('./view/page_head.tpl')
     <div class="row">
-      % include('./view/side_nav.tpl')
-      <div id="system-setting-page" class="col-9">
+      % include('./view/expanding_side_nav.tpl')
+      <div id="system-setting-page" class="col-10">
         %if setting == 'role_mng':
           <h4>系统管理 >>> 角色管理</h4>
           <form action="/add_role" method="POST">
@@ -39,12 +37,27 @@
                   <td>{{role[0]}}</td>
                   <td>{{role[3]}}</td>
                   <td>{{role[2]}}</td>
-                  <td><a href="#">编辑</a> &nbsp
+                  <td><a href="/edit_role/{{role[0]}}">编辑</a> &nbsp
                       <a href="/del_role/{{role[0]}}">删除</a></td>
                 </tr>
               %end
             </tbody>
           </table>
+        %elif setting == "edit_role":
+          <h4>系统管理 >>> 角色管理 >>> 编辑</h4>
+          <form action="/edit_role/{{role2edit}}", method="POST">
+            <label>角色名称: {{role2edit}}</label>
+            <label for="desc">角色描述:
+              <input type="text" name="desc" id="desc"/>
+            </label>
+            <label>
+              <select name="status" id="status">
+                <option value="启用">启用</option>
+                <option value="未启用">未启用</option>
+              </select>
+            </label>
+            <input type="submit" value="提交" />
+          </form>
         %elif setting == "access_granting":
           <h4>系统管理 >>> 角色管理</h4>
           <form action="/access_grant" method="POST">
@@ -64,7 +77,7 @@
             </div>
             <div class="row" id="access-items">
               <ul class="access-list" id="access-tree">
-                <li><input type="checkbox" name="web"><span>边检网站系统</span>
+                <li><input type="checkbox" name="web">边检网站系统
                   <ul>
                     <li><input type="checkbox" name="sys"><span>系统管理</span></li>
                     <!--li><input type="checkbox" name="basic"><span>基础设置</span></li-->
@@ -113,13 +126,37 @@
                     <td>{{user.regtime}}</td>
                     <td>{{user.role}}</td>
                     <td>{{user.access}}</td>
-                    <td><a href="#">编辑</a> &nbsp
+                    <td><a href="/edit_user/{{user.usrname}}">编辑</a> &nbsp
                         <a href="/del_user/{{user.usrname}}">删除</a></td>
                   </tr>
                 %end
               </tbody>
             </table>
           </div>
+        %elif setting == "edit_user":
+          <h4>系统管理 >>> 账号管理 >>> 编辑帐号</h4>
+          <form action="/edit_user/{{usrname}}" method="POST">
+            <label for="usrname"><span>用户名: {{usrname}}</span>
+            </label>
+            <label for="nickname">姓名:
+              <input type="text" name="nickname" id="nickname" />
+            </label>
+            <label for="desc">备注:
+              <input type="text" name="desc" id="desc" />
+            </label>
+            <!--label for="access">查询范围:
+              <select name="access" id="access">
+              </select>
+            </label-->
+            <label for="role">角色:
+              <select name="role" id="role">
+                %for role in roles:
+                  <option value={{role[0]}}>{{role[0]}}</option>
+                %end
+              </select>
+            </label>
+            <input type="submit" value="提交" />
+          </form>
         %elif setting == "adduser":
           <h4>系统管理 >>> 账号管理 >>> 添加帐号</h4>
           <form action="/update_user" method="POST">
