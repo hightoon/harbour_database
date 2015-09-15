@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 %include('./view/html_header.tpl')
 <body unresolved>
   <div id="main" class="managementpage">
     %include('./view/page_head.tpl')
     <div class="row">
-      % include ("./view/expanding_side_nav.tpl")
+      % include('./view/expanding_side_nav.tpl')
       <div id="query-page" class="col-10">
         %if query_tbl == 'driver_recs':
           <h4 id="query-drivers">查询 >>> 人员进出纪录</h4>
