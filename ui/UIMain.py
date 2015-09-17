@@ -416,7 +416,8 @@ def add_driver():
   if act_user is None:
     redirect('/')
   act_user = UserDb.get(act_user)
-  return template('./view/driver.tpl', privs=UserDb.get_privilege(act_user.role))
+  return template('./view/driver.tpl', privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user())
 
 @route('/add_driver', method='POST')
 def add_driver():
