@@ -26,25 +26,32 @@
             </p>
             <p>
               <label for="vehicle">
-                <span>车辆信息: </span>
+                <span>船舶信息: </span>
                 <input type="text" id="vehicle" name="vehicle" />
               </label>
               <label for="catlog">
                 <span>类别: </span>
                 <select id="catlog" name="cat">
+                  <option value="登轮证">登轮证</option>
                   <option value="临时登轮证">临时登轮证</option>
+                  <option value="长期登轮证">长期登轮证</option>
                   <option value="船员登陆证">船员登陆证</option>
+                  <option value="登陆证">登陆证</option>
                   <option value="台湾船员登陆证">台湾船员登陆证</option>
                   <option value="临时入境许可">临时入境许可</option>
                   <option value="随船工作证">随船工作证</option>
                   <option value="海员证">海员证</option>
+                  <option value="身份证">身份证</option>
+                  <option value="驾照">驾照</option>
+                  <option value="护照">护照</option>
                   <option value="" selected>全部</option>
                 </select>
               </label>
               <label for="harbour">
                 <span>港口: </span>
                   <select id="harbour" name="harbour">
-                    <option value="横沙渔港">横沙渔港</option>
+                    <option value="横沙渔港">横沙渔港1号</option>
+                    <option value="横沙渔港">横沙渔港2号</option>
                     <option value="" selected>全部</option>
                   </select>
               </label>
@@ -101,6 +108,10 @@
               </label>
           </p>
           <p>
+              <label for="company">
+                <span>车牌: </span>
+                <input type="text" id="company" name="company" />
+              </label>
               <label for="idnum">
                 <span>证件号: </span>
                 <input type="text" id="idnum" name="idnum" />
@@ -162,32 +173,33 @@
         </form>
         %end
         <br/><br/>
+        %if query_results:
         <h5>查询结果</h5>
         <table class="query-results">
-          %for item in query_results:
+          <tr>
+            %for field in query_results[0]:
+              <th>{{field}}</th>
+            %end
+            <th>操作</th>
+          </tr>
+          %for item in query_results[1:]:
             <tr>
             %for field in item:
               <td>
-                %if field.endswith("jpg") or field.endswith("JPG"):
+                %if str(field).endswith("jpg") or str(field).endswith("JPG"):
                   <img src="/static/./{{field}}" alt={{field}} width="140" height="100">
                 %else:
                   {{field}}
                 %end
               </td>
             %end
+            <td><button type="button" onclick="if (confirm('操作无法撤销!确认删除?')){location.href='/delcomp/{{item[0]}}';}">删除</button></td>
             </tr>
           %end
         </table>
+        %end
       </div>
     </div>
   </div>
-  <script type="text/javascript">
-  $(function() {
-    $( "#startdate" ).datepicker();
-    $( "#enddate" ).datepicker();
-    $( "#start" ).datepicker();
-    $( "#end" ).datepicker();
-  });
-  </script>
 </body>
 </html>

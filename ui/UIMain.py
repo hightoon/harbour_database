@@ -24,7 +24,7 @@ import UserDb
 
 session_opts = {
     'session.type': 'file',
-    'session.cookie_expires': 3600,
+    'session.cookie_expires': 1800,
     'session.data_dir': './data',
     'session.auto': True
 }
@@ -73,17 +73,23 @@ def get_hosts():
 def send_sql(sql):
   HOST, PORT = '172.16.0.101', 9998
   sock1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  sock1.settimeout(3.0)
   try:
       sock1.connect((HOST, PORT))
       sock1.sendall('sql:' + sql + "\n")
+  except:
+      print 'sock1 connect failed'
   finally:
       sock1.close()
 
   HOST, PORT = '172.16.0.108', 9998
   sock2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  sock2.settimeout(3.0)
   try:
       sock2.connect((HOST, PORT))
       sock2.sendall('sql:' + sql + "\n")
+  except:
+      print 'sock2 connect failed'
   finally:
       sock2.close()
 
@@ -97,6 +103,12 @@ def cons_query_where_clause(query_mapping):
   conds = ['=:'.join([col, col]) for col in query_mapping.keys()]
   cond_str = ' and '.join(conds)
   return cond_str
+
+def cons_like_clause(like_kv):
+  conds = ['%s like \'%%%s%%\''%(k, v) for k, v in like_kv.items()]
+  cond_str = ' and '.join(conds)
+  return cond_str
+
 
 def cons_query_interval(start, end):
   timefmt = '%Y-%m-%d'
@@ -192,19 +204,35 @@ def query():
                   privs=UserDb.get_privilege(act_user.role),
                   curr_user=get_act_user())
 
+@route('/query_company')
+def query():
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  return template('./view/query.tpl', query_results=[], query_tbl='company',
+                  privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user())
+
 @route('/query_drivers', method='POST')
 def query_driver():
   act_user = get_act_user()
   if act_user is None:
     redirect('/')
   act_user = UserDb.get(act_user)
-  driver_rec_hdr = (u'姓名', u'类别', u'身份证号', u'车辆', u'进出时间', u'边检站', u'港口', u'进出状态', u'报警状态', u'照片', )
-  tab_query_cols = ('name', 'cat', 'vechicle', 'station', 'harbour', 'direction', 'alarm')
+  driver_rec_hdr = (u'姓名', u'类别', u'身份证号', u'船舶', u'进出时间', u'港口', u'边检站', u'进出状态', u'报警状态', u'照片', )
+  tab_query_cols = ('cat', 'station', 'harbour', 'direction', 'alarm')
+  like_query_cols = ('name', 'vechicle')
   query_cond = {}
   for kw in tab_query_cols:
     input = request.forms.get(kw)
     if input: query_cond[kw] = input
   where_str = cons_query_where_clause(query_cond)
+  like_cond = {}
+  for kw in like_query_cols:
+    input = request.forms.get(kw)
+    if input: like_cond[kw] = input
+  like_str = cons_like_clause(like_cond)
   # add query interval
   interval = cons_query_interval(request.forms.get('start'), request.forms.get('end'))
   if interval:
@@ -218,10 +246,11 @@ def query_driver():
   dbconn = sdb.connect()
   dbconn.text_factory = str
   cur = dbconn.cursor()
-  final_cond = ' and '.join([subcond for subcond in (where_str, interval_str) if subcond])
+  final_cond = ' and '.join([subcond for subcond in (where_str, like_str, interval_str) if subcond])
   final_query_str = "SELECT * FROM driver_rec_table"
   if final_cond:
     final_query_str += " WHERE " + final_cond
+  print final_query_str
   cur.execute(final_query_str, query_cond)
   res = cur.fetchall()
   cur.close()
@@ -244,12 +273,18 @@ def query_vehicle():
   act_user = UserDb.get(act_user)
   veh_rec_hdr = (u'车牌号', u'公司全称', u'司机', u'证件类型', u'证件号码',
                  u'进出时间', u'港口', u'进出状态', u'司机照片', u'车辆照片')
-  tab_query_cols = ('plate', 'idnum', 'direction')
+  tab_query_cols = ('direction')
+  like_query_cols = ('plate', 'idnum')
   query_cond = {}
   for kw in tab_query_cols:
     input = request.forms.get(kw)
     if input: query_cond[kw] = input
   where_str = cons_query_where_clause(query_cond)
+  like_cond = {}
+  for kw in like_query_cols:
+    input = request.forms.get(kw)
+    if input: like_cond[kw] = input
+  like_str = cons_like_clause(like_cond)
   # add query interval
   interval = cons_query_interval(request.forms.get('start'), request.forms.get('end'))
   if interval:
@@ -263,7 +298,7 @@ def query_vehicle():
   dbconn = sdb.connect()
   dbconn.text_factory = str
   cur = dbconn.cursor()
-  final_cond = ' and '.join([subcond for subcond in (where_str, interval_str) if subcond])
+  final_cond = ' and '.join([subcond for subcond in (where_str, like_str, interval_str) if subcond])
   final_query_str = "SELECT * FROM vehicle_rec_table"
   if final_cond:
     final_query_str += " WHERE " + final_cond
@@ -297,15 +332,31 @@ def query_company():
   cur = dbconn.cursor()
   #cur.execute("SELECT * FROM company_table WHERE GSQC=:name", {'name':fullname})
   #cur.execute("SELECT * FROM company_table")
-  cur.execute('SELECT * FROM company_table WHERE GSQC=?', (fullname,))
-  res = cur.fetchall()
-  print res
+  cur.execute('SELECT rowid, * FROM company_table WHERE GSQC like \'%%%s%%\''%(fullname,))
+  tab_hdr = [('序号', '公司代码', '公司全称', '公司简称', '类型代码', '所属国籍', '负责人', '业务范围',
+            '使用标记', '操作员', '操作时间', '操作口岸', '备注')]
+  res = tab_hdr + cur.fetchall()
   cur.close()
   dbconn.close()
   return template('./view/query.tpl',
           query_results=res, query_tbl='company',
           privs=UserDb.get_privilege(act_user.role),
           curr_user=get_act_user())
+
+@route('/delcomp/<rowid>')
+def delcomp(rowid):
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  print rowid
+  dbconn = sdb.connect()
+  dbconn.text_factory = str
+  cur = dbconn.cursor()
+  cur.execute('DELETE FROM company_table WHERE rowid=%s'%(rowid,))
+  dbconn.commit()
+  dbconn.close()
+  redirect('/query_company')
 
 @route('/query_vehicle_info', method='POST')
 def query_vhl_info():

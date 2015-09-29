@@ -12,6 +12,8 @@
   <script src="/static/view/bsfiles/js/bootstrap.min.js"></script>
   <script src="/static/view/bsfiles/js/bootstrap.js"></script>
   <script type="text/javascript">
+    $( "#startdate" ).datepicker();
+    $( "#enddate" ).datepicker();
     menu_status = new Array();
     function showHide(theid){
       if (document.getElementById){
@@ -36,5 +38,11 @@
           switch_id.className = menu_status["setting_items"];
         }
     }
+
+    //$(function() {
+      
+      $( "#start" ).datepicker();
+      $( "#end" ).datepicker();
+    //});
   </script>
 </head>

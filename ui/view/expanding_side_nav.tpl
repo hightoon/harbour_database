@@ -4,6 +4,7 @@
       <div id="query_items" class="show">
         <a class="side-submenu" href="/query_driver_recs">- 人员进出纪录</a>
         <a class="side-submenu" href="/query_vehicle_recs">- 车辆进出纪录</a>
+        <a class="side-submenu" href="/query_company">- 公司</a>
       </div>
       %end
       %if "vehicle" in privs:
