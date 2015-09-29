@@ -39,6 +39,24 @@ def get_act_user():
   else:
     return None
 
+def get_query_disp():
+  if 'querydisp' in request.session:
+    return request.session['querydisp']
+  else:
+    return 'hide'
+
+def set_query_disp(val):
+  request.session['querydisp'] = val
+
+def get_setting_disp():
+  if 'settingdisp' in request.session:
+    return request.session['settingdisp']
+  else:
+    return 'hide'
+
+def set_setting_disp(val):
+  request.session['settingdisp'] = val
+
 def retr_img_from_ftp(filename):
   usr, passwd = '111111', '111111'
   hosts = ['172.16.0.101', '172.16.0.108']
@@ -181,7 +199,8 @@ def query_home():
     redirect('/')
   privs = UserDb.get_privilege(UserDb.get(act_user).role)
   return template('./view/query.tpl', query_results=[], query_tbl='',
-                  privs=privs, curr_user=get_act_user(), submenustatus='hide')
+                  privs=privs, curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/query_driver_recs')
 def query():
@@ -193,7 +212,8 @@ def query():
   stations = list(set(stations))
   return template('./view/query.tpl', query_results=[], query_tbl='driver_recs',
                   stations=stations, privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), submenustatus='show')
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/query_vehicle_recs')
 def query():
@@ -203,7 +223,8 @@ def query():
   act_user = UserDb.get(act_user)
   return template('./view/query.tpl', query_results=[], query_tbl='vehicle_recs',
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), submenustatus='show')
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/query_company')
 def query():
@@ -213,7 +234,8 @@ def query():
   act_user = UserDb.get(act_user)
   return template('./view/query.tpl', query_results=[], query_tbl='company',
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), submenustatus='show')
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/query_drivers', method='POST')
 def query_driver():
@@ -264,7 +286,8 @@ def query_driver():
           query_results=[driver_rec_hdr]+res, query_tbl='driver_recs',
           stations=list(set(sdb.get_stations_from_driver_recs())),
           privs=UserDb.get_privilege(act_user.role),
-          curr_user=get_act_user(), submenustatus='show')
+          curr_user=get_act_user(), 
+          querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/query_vehicles', method='POST')
 def query_vehicle():
@@ -317,7 +340,8 @@ def query_vehicle():
   return template('./view/query.tpl',
           query_results=[veh_rec_hdr]+res, query_tbl='vehicle_recs',
           privs=UserDb.get_privilege(act_user.role),
-          curr_user=get_act_user(), submenustatus='show')
+          curr_user=get_act_user(), 
+          querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/query_company', method='POST')
 def query_company():
@@ -342,7 +366,8 @@ def query_company():
   return template('./view/query.tpl',
           query_results=res, query_tbl='company',
           privs=UserDb.get_privilege(act_user.role),
-          curr_user=get_act_user(), submenustatus='show')
+          curr_user=get_act_user(), 
+          querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/delcompany/<rowid>')
 def delcomp(rowid):
@@ -367,7 +392,8 @@ def query_veh_info():
   act_user = UserDb.get(act_user)
   return template('./view/query.tpl', query_results=[], query_tbl='vehicle',
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), submenustatus='show')
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/query_vehicle_info', method='POST')
 def query_vhl_info():
@@ -389,13 +415,13 @@ def query_vhl_info():
   res += cur.fetchall()
   #cur.execute("SELECT * FROM vehicleinfo")
   #res = cur.fetchall()
-  #print res
   cur.close()
   dbconn.close()
   return template('./view/query.tpl',
           query_results=res, query_tbl='vehicle',
           privs=UserDb.get_privilege(act_user.role),
-          curr_user=get_act_user(), submenustatus='show')
+          curr_user=get_act_user(), 
+          querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/delvehicle/<rowid>')
 def delvehicle(rowid):
@@ -420,7 +446,8 @@ def query_veh_info():
   act_user = UserDb.get(act_user)
   return template('./view/query.tpl', query_results=[], query_tbl='driver',
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), submenustatus='show')
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/query_driver_info', method='POST')
 def query_driver_info():
@@ -445,7 +472,8 @@ def query_driver_info():
   return template('./view/query.tpl',
           query_results=res, query_tbl='driver',
           privs=UserDb.get_privilege(act_user.role),
-          curr_user=get_act_user(), submenustatus='show')
+          curr_user=get_act_user(), 
+          querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/deldriver/<rowid>')
 def deldriver(rowid):
@@ -470,7 +498,8 @@ def query_ship():
   act_user = UserDb.get(act_user)
   return template('./view/query.tpl', query_results=[], query_tbl='ship',
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), submenustatus='show')
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 
 @route('/query_ship', method='POST')
@@ -496,7 +525,8 @@ def query_ship():
   return template('./view/query.tpl',
           query_results=res, query_tbl='ship',
           privs=UserDb.get_privilege(act_user.role),
-          curr_user=get_act_user(), submenustatus='show')
+          curr_user=get_act_user(), 
+          querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/delship/<rowid>')
 def deldriver(rowid):
@@ -520,7 +550,8 @@ def add_vehicle():
     redirect('/')
   act_user = UserDb.get(act_user)
   return template('./view/vehicle.tpl', privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), submenustatus='hide')
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/add_vehicle', method='POST')
 def add_vehicle():
@@ -556,7 +587,8 @@ def add_driver():
     redirect('/')
   act_user = UserDb.get(act_user)
   return template('./view/driver.tpl', privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), submenustatus='hide')
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/add_driver', method='POST')
 def add_driver():
@@ -591,7 +623,8 @@ def add_company():
   act_user = UserDb.get(act_user)
   return template('./view/company.tpl',
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), submenustatus='hide')
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/add_company', method='POST')
 def add_company():
@@ -625,7 +658,8 @@ def add_ship():
     redirect('/')
   act_user = UserDb.get(act_user)
   return template('./view/ship.tpl', privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), submenustatus='hide')
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/add_ship', method='POST')
 def add_ship():
@@ -652,6 +686,18 @@ def add_ship():
   send_sql(sql)
   redirect('/ships')
 
+@route('/setting')
+def setting():
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  return template('./view/setting.tpl', setting='setting',
+                  roles=UserDb.get_roles(),
+                  privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
+
 @route('/user_roles')
 def role_mng():
   act_user = get_act_user()
@@ -661,7 +707,8 @@ def role_mng():
   return template('./view/setting.tpl', setting='role_mng',
                   roles=UserDb.get_roles(),
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), submenustatus='show')
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/add_role', method='POST')
 def add_role():
@@ -698,7 +745,8 @@ def edit_role(rolename):
   act_user = UserDb.get(act_user)
   return template('./view/setting.tpl', setting='edit_role',
                   roles=UserDb.get_roles(), privs=UserDb.get_privilege(act_user.role),
-                  role2edit=rolename, curr_user=get_act_user(), submenustatus='show')
+                  role2edit=rolename, curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/edit_role/<rolename>', method='POST')
 def edit_role(rolename):
@@ -721,7 +769,8 @@ def access_control():
   return template('./view/setting.tpl', setting='access_granting',
                   roles=UserDb.get_roles(),
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), submenustatus='show')
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/access_grant', method='POST')
 def grant():
@@ -748,7 +797,8 @@ def account_mngn():
   return template('./view/setting.tpl', setting='accounts',
                   users=users,
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), submenustatus='show')
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/del_user/<usrname>', method='POST')
 def del_user(usrname):
@@ -768,7 +818,8 @@ def edit_user(usrname):
   return template('./view/setting.tpl', setting='edit_user',
                   privs=UserDb.get_privilege(act_user.role),
                   usrname=usrname, roles=UserDb.get_roles(),
-                  curr_user=get_act_user(), submenustatus='show')
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/edit_user/<usrname>', method='POST')
 def edit_user(usrname):
@@ -794,7 +845,8 @@ def account_query():
     return template('./view/setting.tpl', setting="accounts",
                     users=[UserDb.get(user)],
                     privs=UserDb.get_privilege(act_user.role),
-                    curr_user=get_act_user(), submenustatus='show')
+                    curr_user=get_act_user(), 
+                    querydisp=get_query_disp(), settingdisp=get_setting_disp())
   elif request.forms.get('create'):
     redirect('/user_update')
 
@@ -807,7 +859,8 @@ def update_user():
   return template('./view/setting.tpl', setting="adduser",
                   roles=UserDb.get_roles(),
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), submenustatus='show')
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/update_user', method='POST')
 def update_user():
@@ -842,7 +895,8 @@ def change_passwd():
   act_user = UserDb.get(act_user)
   return template('./view/setting.tpl', setting="change_password",
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), submenustatus='hide')
+                  curr_user=get_act_user(), 
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/change_passwd', method='POST')
 def update_passwd():
@@ -856,6 +910,24 @@ def update_passwd():
     return '新密码两次输入不一致，请返回重试!'
   UserDb.change_passwd(act_user.usrname, passwd)
   redirect('/account_mngn')
+
+@route('/tempstate/query_items/<state>')
+def query_items_state(state):
+  print state
+  if get_query_disp() == 'show':
+    set_query_disp('hide')
+  else:
+    set_query_disp('show')
+  redirect('/query')
+
+@route('/tempstate/setting_items/<state>')
+def query_items_state(state):
+  print state
+  if get_setting_disp() == 'show':
+    set_setting_disp('hide')
+  else:
+    set_setting_disp('show')
+  redirect('/setting')
 
 @route('/static/<filename:path>')
 def send_static(filename):

@@ -21,8 +21,10 @@
       $( "#start" ).datepicker();
       $( "#end" ).datepicker();
     });
-    
+
     menu_status = new Array();
+    keepShowHide();
+    
     function showHide(theid){
       if (document.getElementById){
       var switch_id = document.getElementById(theid);

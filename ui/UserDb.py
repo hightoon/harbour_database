@@ -109,7 +109,6 @@ def get(usrname):
   cur = conn.cursor()
   userinfo = cur.execute('SELECT * FROM users WHERE name=?', (usrname,)).fetchone()
   if userinfo is not None:
-    print userinfo
     username, passwd, isadmin, status, nickname, role, desc, regts = userinfo
     return User(username, passwd, isadmin, nickname, desc, role, status, regts)
   else:

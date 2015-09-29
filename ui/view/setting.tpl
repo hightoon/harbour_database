@@ -199,6 +199,8 @@
             </label>
             <input type="submit" value="确认修改" />
           </form>
+        %else:
+          <h4>系统设置</h4>
         %end
       </div>
     </div>

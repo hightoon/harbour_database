@@ -193,7 +193,11 @@
                 %end
               </td>
             %end
+            %if 'recs' not in query_tbl:
             <td><button type="button" onclick="if (confirm('操作无法撤销!确认删除?')){location.href='/del{{query_tbl}}/{{item[0]}}';}">删除</button></td>
+            %else:
+            <td>无可用操作</td>
+            %end
             </tr>
           %end
         </table>
