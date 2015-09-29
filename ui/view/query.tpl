@@ -193,7 +193,7 @@
                 %end
               </td>
             %end
-            <td><button type="button" onclick="if (confirm('操作无法撤销!确认删除?')){location.href='/delcomp/{{item[0]}}';}">删除</button></td>
+            <td><button type="button" onclick="if (confirm('操作无法撤销!确认删除?')){location.href='/del{{query_tbl}}/{{item[0]}}';}">删除</button></td>
             </tr>
           %end
         </table>

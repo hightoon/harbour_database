@@ -81,10 +81,10 @@
               <span>当前检查分类: </span>
               <!--input type="text" id="dqjcfl" name="dqjcfl" /-->
 			  <select id="dqjcfl" name="dqjcfl">
-                <option value="rj" selected>入境</option>
-                <option value="cj">出境</option>
-				<option value="rg">入港</option>
-                <option value="lg">出港</option>
+                <option value="入境" selected>入境</option>
+                <option value="出境">出境</option>
+				        <option value="入港">入港</option>
+                <option value="出港">出港</option>
               </select>
             </label>
           </p>

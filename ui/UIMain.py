@@ -111,6 +111,7 @@ def cons_like_clause(like_kv):
 
 
 def cons_query_interval(start, end):
+  print start, end
   timefmt = '%Y-%m-%d'
   try:
     [datetime.strptime(t, timefmt) for t in (start, end)]
@@ -180,7 +181,7 @@ def query_home():
     redirect('/')
   privs = UserDb.get_privilege(UserDb.get(act_user).role)
   return template('./view/query.tpl', query_results=[], query_tbl='',
-                  privs=privs, curr_user=get_act_user())
+                  privs=privs, curr_user=get_act_user(), submenustatus='hide')
 
 @route('/query_driver_recs')
 def query():
@@ -192,7 +193,7 @@ def query():
   stations = list(set(stations))
   return template('./view/query.tpl', query_results=[], query_tbl='driver_recs',
                   stations=stations, privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user())
+                  curr_user=get_act_user(), submenustatus='show')
 
 @route('/query_vehicle_recs')
 def query():
@@ -202,7 +203,7 @@ def query():
   act_user = UserDb.get(act_user)
   return template('./view/query.tpl', query_results=[], query_tbl='vehicle_recs',
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user())
+                  curr_user=get_act_user(), submenustatus='show')
 
 @route('/query_company')
 def query():
@@ -212,7 +213,7 @@ def query():
   act_user = UserDb.get(act_user)
   return template('./view/query.tpl', query_results=[], query_tbl='company',
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user())
+                  curr_user=get_act_user(), submenustatus='show')
 
 @route('/query_drivers', method='POST')
 def query_driver():
@@ -263,7 +264,7 @@ def query_driver():
           query_results=[driver_rec_hdr]+res, query_tbl='driver_recs',
           stations=list(set(sdb.get_stations_from_driver_recs())),
           privs=UserDb.get_privilege(act_user.role),
-          curr_user=get_act_user())
+          curr_user=get_act_user(), submenustatus='show')
 
 @route('/query_vehicles', method='POST')
 def query_vehicle():
@@ -274,7 +275,7 @@ def query_vehicle():
   veh_rec_hdr = (u'车牌号', u'公司全称', u'司机', u'证件类型', u'证件号码',
                  u'进出时间', u'港口', u'进出状态', u'司机照片', u'车辆照片')
   tab_query_cols = ('direction')
-  like_query_cols = ('plate', 'idnum')
+  like_query_cols = ('plate', 'idnum', 'company')
   query_cond = {}
   for kw in tab_query_cols:
     input = request.forms.get(kw)
@@ -316,7 +317,7 @@ def query_vehicle():
   return template('./view/query.tpl',
           query_results=[veh_rec_hdr]+res, query_tbl='vehicle_recs',
           privs=UserDb.get_privilege(act_user.role),
-          curr_user=get_act_user())
+          curr_user=get_act_user(), submenustatus='show')
 
 @route('/query_company', method='POST')
 def query_company():
@@ -341,9 +342,9 @@ def query_company():
   return template('./view/query.tpl',
           query_results=res, query_tbl='company',
           privs=UserDb.get_privilege(act_user.role),
-          curr_user=get_act_user())
+          curr_user=get_act_user(), submenustatus='show')
 
-@route('/delcomp/<rowid>')
+@route('/delcompany/<rowid>')
 def delcomp(rowid):
   act_user = get_act_user()
   if act_user is None:
@@ -358,6 +359,16 @@ def delcomp(rowid):
   dbconn.close()
   redirect('/query_company')
 
+@route('/query_vehicle_info')
+def query_veh_info():
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  return template('./view/query.tpl', query_results=[], query_tbl='vehicle',
+                  privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user(), submenustatus='show')
+
 @route('/query_vehicle_info', method='POST')
 def query_vhl_info():
   act_user = get_act_user()
@@ -370,9 +381,12 @@ def query_vhl_info():
   dbconn = sdb.connect()
   dbconn.text_factory = str
   cur = dbconn.cursor()
-  cur.execute("SELECT * FROM vehicleinfo WHERE WYCPH=?", (plate,))
-  res = cur.fetchall()
-  print res
+  cur.execute("SELECT rowid, * FROM vehicleinfo WHERE WYCPH like \'%%%s%%\'"%(plate,))
+  res = [('序号', '车牌号', '公司全称', '境外车牌号', '境内车牌号', '所属国籍', '车辆类型代码',
+          '车辆高度', '肽位', '批文有效期', '通行口岸代码', '通行有效期', '申请表号', '现批文号码',
+          '款式颜色', '车头字', '载重吨位', '内地承办单位', '录入检查员代码', '录入时间', '操作口岸代码',
+          '备注', '主驾驶', '副驾驶')]
+  res += cur.fetchall()
   #cur.execute("SELECT * FROM vehicleinfo")
   #res = cur.fetchall()
   #print res
@@ -381,7 +395,32 @@ def query_vhl_info():
   return template('./view/query.tpl',
           query_results=res, query_tbl='vehicle',
           privs=UserDb.get_privilege(act_user.role),
-          curr_user=get_act_user())
+          curr_user=get_act_user(), submenustatus='show')
+
+@route('/delvehicle/<rowid>')
+def delvehicle(rowid):
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  print rowid
+  dbconn = sdb.connect()
+  dbconn.text_factory = str
+  cur = dbconn.cursor()
+  cur.execute('DELETE FROM vehicleinfo WHERE rowid=%s'%(rowid,))
+  dbconn.commit()
+  dbconn.close()
+  redirect('/query_vehicle_info')
+
+@route('/query_driver_info')
+def query_veh_info():
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  return template('./view/query.tpl', query_results=[], query_tbl='driver',
+                  privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user(), submenustatus='show')
 
 @route('/query_driver_info', method='POST')
 def query_driver_info():
@@ -394,16 +433,45 @@ def query_driver_info():
   dbconn = sdb.connect()
   dbconn.text_factory = str
   cur = dbconn.cursor()
-  cur.execute("SELECT * FROM driverinfo_use WHERE XM=?", (name,))
-  #cur.execute("SELECT * FROM driverinfo")
-  res = cur.fetchall()
-  print res
+  cur.execute("SELECT rowid, * FROM driverinfo_use WHERE XM like \'%%%s%%\'"%(name,))
+  res = [('序号', '停留期', '前往国', '来自国', '许可证号', '身份证号', '第2姓名', '第2出生日期',
+          '第二证件号码', '第二证件类别代码', '通行口岸代码', '民族代码', '通用标志', '操作人代码', '操作时间',
+          '操作口岸', '备注', '签证号', '证件号码', '证件种类', '姓名', '性别', '出生日期',
+          '国籍代码', '申请表号', '准驾签注有效期', '公司全称', '签证签注代码',
+          '发证机关代码', '签证签注有效期', 'IC卡号')]
+  res += cur.fetchall()
   cur.close()
   dbconn.close()
   return template('./view/query.tpl',
           query_results=res, query_tbl='driver',
           privs=UserDb.get_privilege(act_user.role),
-          curr_user=get_act_user())
+          curr_user=get_act_user(), submenustatus='show')
+
+@route('/deldriver/<rowid>')
+def deldriver(rowid):
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  print rowid
+  dbconn = sdb.connect()
+  dbconn.text_factory = str
+  cur = dbconn.cursor()
+  cur.execute('DELETE FROM driverinfo_use WHERE rowid=%s'%(rowid,))
+  dbconn.commit()
+  dbconn.close()
+  redirect('/query_driver_info')
+
+@route('/query_ship')
+def query_ship():
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  return template('./view/query.tpl', query_results=[], query_tbl='ship',
+                  privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user(), submenustatus='show')
+
 
 @route('/query_ship', method='POST')
 def query_ship():
@@ -416,15 +484,34 @@ def query_ship():
   dbconn = sdb.connect()
   dbconn.text_factory = str
   cur = dbconn.cursor()
-  cur.execute("SELECT * FROM crs_shp_table WHERE HC=?", (cruise,))
-  res = cur.fetchall()
-  print res
+  cur.execute("SELECT rowid, * FROM crs_shp_table WHERE HC like \'%%%s%%\'"%(cruise,))
+  res = [('序号', '航次', '船舶检索标识', 'MMSI号', '交通工具类型代码', '船舶种类代码', '船舶中文名称',
+          '船舶英文名称', 'IMO号', '国际呼号', '国籍地区代码', '船员变更标识', '重点关注标识', 
+          '当前检查分类', '当前检查状态', '口岸代码', '操作员', '操作部门', '操作时间', '船籍港', '当前停靠地（码头）',
+          '当前停靠地（泊位）', '解档修改状态', '加封人', '加封时间', '启封人', '启封时间', '武器弹药',
+          '加封口岸', '启封口岸', '优检标志', '船舶状态')]
+  res += cur.fetchall()
   cur.close()
   dbconn.close()
   return template('./view/query.tpl',
           query_results=res, query_tbl='ship',
           privs=UserDb.get_privilege(act_user.role),
-          curr_user=get_act_user())
+          curr_user=get_act_user(), submenustatus='show')
+
+@route('/delship/<rowid>')
+def deldriver(rowid):
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  print rowid
+  dbconn = sdb.connect()
+  dbconn.text_factory = str
+  cur = dbconn.cursor()
+  cur.execute('DELETE FROM crs_shp_table WHERE rowid=%s'%(rowid,))
+  dbconn.commit()
+  dbconn.close()
+  redirect('/query_ship')
 
 @route('/vehicles')
 def add_vehicle():
@@ -433,7 +520,7 @@ def add_vehicle():
     redirect('/')
   act_user = UserDb.get(act_user)
   return template('./view/vehicle.tpl', privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user())
+                  curr_user=get_act_user(), submenustatus='hide')
 
 @route('/add_vehicle', method='POST')
 def add_vehicle():
@@ -460,6 +547,7 @@ def add_vehicle():
   sql = 'insert into vehicleinfo(%s) values (%s)'%(','.join(cols), ','.join(user_input),)
   print sql
   send_sql(sql)
+  redirect('/vehicles')
 
 @route('/drivers')
 def add_driver():
@@ -468,7 +556,7 @@ def add_driver():
     redirect('/')
   act_user = UserDb.get(act_user)
   return template('./view/driver.tpl', privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user())
+                  curr_user=get_act_user(), submenustatus='hide')
 
 @route('/add_driver', method='POST')
 def add_driver():
@@ -493,6 +581,7 @@ def add_driver():
   user_input = [convert_table_value(item) for item in user_input]
   sql = 'insert into driverinfo_use values (%s)'%(','.join(user_input),)
   send_sql(sql)
+  redirect('/drivers')
 
 @route('/companies')
 def add_company():
@@ -502,7 +591,7 @@ def add_company():
   act_user = UserDb.get(act_user)
   return template('./view/company.tpl',
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user())
+                  curr_user=get_act_user(), submenustatus='hide')
 
 @route('/add_company', method='POST')
 def add_company():
@@ -527,6 +616,7 @@ def add_company():
   user_input = [convert_table_value(item) for item in user_input]
   sql = 'insert into company_table values (%s)'%(','.join(user_input),)
   send_sql(sql)
+  redirect('/companies')
 
 @route('/ships')
 def add_ship():
@@ -535,7 +625,7 @@ def add_ship():
     redirect('/')
   act_user = UserDb.get(act_user)
   return template('./view/ship.tpl', privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user())
+                  curr_user=get_act_user(), submenustatus='hide')
 
 @route('/add_ship', method='POST')
 def add_ship():
@@ -560,6 +650,7 @@ def add_ship():
   user_input = [convert_table_value(item) for item in user_input]
   sql = 'insert into crs_shp_table values (%s)'%(','.join(user_input),)
   send_sql(sql)
+  redirect('/ships')
 
 @route('/user_roles')
 def role_mng():
@@ -570,7 +661,7 @@ def role_mng():
   return template('./view/setting.tpl', setting='role_mng',
                   roles=UserDb.get_roles(),
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user())
+                  curr_user=get_act_user(), submenustatus='show')
 
 @route('/add_role', method='POST')
 def add_role():
@@ -607,7 +698,7 @@ def edit_role(rolename):
   act_user = UserDb.get(act_user)
   return template('./view/setting.tpl', setting='edit_role',
                   roles=UserDb.get_roles(), privs=UserDb.get_privilege(act_user.role),
-                  role2edit=rolename, curr_user=get_act_user())
+                  role2edit=rolename, curr_user=get_act_user(), submenustatus='show')
 
 @route('/edit_role/<rolename>', method='POST')
 def edit_role(rolename):
@@ -630,7 +721,7 @@ def access_control():
   return template('./view/setting.tpl', setting='access_granting',
                   roles=UserDb.get_roles(),
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user())
+                  curr_user=get_act_user(), submenustatus='show')
 
 @route('/access_grant', method='POST')
 def grant():
@@ -657,7 +748,7 @@ def account_mngn():
   return template('./view/setting.tpl', setting='accounts',
                   users=users,
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(),)
+                  curr_user=get_act_user(), submenustatus='show')
 
 @route('/del_user/<usrname>', method='POST')
 def del_user(usrname):
@@ -677,7 +768,7 @@ def edit_user(usrname):
   return template('./view/setting.tpl', setting='edit_user',
                   privs=UserDb.get_privilege(act_user.role),
                   usrname=usrname, roles=UserDb.get_roles(),
-                  curr_user=get_act_user())
+                  curr_user=get_act_user(), submenustatus='show')
 
 @route('/edit_user/<usrname>', method='POST')
 def edit_user(usrname):
@@ -703,7 +794,7 @@ def account_query():
     return template('./view/setting.tpl', setting="accounts",
                     users=[UserDb.get(user)],
                     privs=UserDb.get_privilege(act_user.role),
-                    curr_user=get_act_user())
+                    curr_user=get_act_user(), submenustatus='show')
   elif request.forms.get('create'):
     redirect('/user_update')
 
@@ -716,7 +807,7 @@ def update_user():
   return template('./view/setting.tpl', setting="adduser",
                   roles=UserDb.get_roles(),
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user())
+                  curr_user=get_act_user(), submenustatus='show')
 
 @route('/update_user', method='POST')
 def update_user():
@@ -751,7 +842,7 @@ def change_passwd():
   act_user = UserDb.get(act_user)
   return template('./view/setting.tpl', setting="change_password",
                   privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user())
+                  curr_user=get_act_user(), submenustatus='hide')
 
 @route('/change_passwd', method='POST')
 def update_passwd():

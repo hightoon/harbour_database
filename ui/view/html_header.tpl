@@ -5,15 +5,23 @@
   <!--link rel="stylesheet" type="text/css" href="/static/view/bsfiles/css/bootstrap.min.css"-->
   <link rel="stylesheet" type="text/css" href="/static/view/style.css">
   <link rel="stylesheet" type="text/css" href="/static/view/jquery-ui.css">
-  <script type="text/javascript" src="/static/js/checkboxtree-0.5.2/library/jquery-1.4.4.js"></script>
-  <script type="text/javascript" src="/static/js/jquery-1.11.3.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="/static/view/js/jquery-ui-1.11.4.custom/jquery-ui.css">
+  <!--script type="text/javascript" src="/static/js/checkboxtree-0.5.2/library/jquery-1.4.4.js"></script-->
+  <!--script type="text/javascript" src="/static/js/jquery-1.11.3.min.js"></script-->
   <script type="text/javascript" src="/static/js/checkboxtree-0.5.2/library/jquery-ui-1.8.12.custom/js/jquery-ui-1.8.12.custom.min.js"></script>
   <script type="text/javascript" src="/static/js/checkboxtree-0.5.2/jquery.checkboxtree.js"></script>
   <script src="/static/view/bsfiles/js/bootstrap.min.js"></script>
   <script src="/static/view/bsfiles/js/bootstrap.js"></script>
-  <script type="text/javascript">
-    $( "#startdate" ).datepicker();
-    $( "#enddate" ).datepicker();
+  <script type="text/javascript" src="/static/js/jquery-ui-1.11.4.custom/external/jquery/jquery.js"></script>
+  <script type="text/javascript" src="/static/js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
+  <script>
+    $(function() {
+      $( "#startdate" ).datepicker();
+      $( "#enddate" ).datepicker();
+      $( "#start" ).datepicker();
+      $( "#end" ).datepicker();
+    });
+    
     menu_status = new Array();
     function showHide(theid){
       if (document.getElementById){
@@ -26,6 +34,7 @@
              switch_id.className = 'hide';
              menu_status[theid] = 'hide';
           }
+          //keepShowHide();
       }
     }
 
@@ -33,16 +42,9 @@
         if (document.getElementById){
           var switch_id = document.getElementById("query_items");
           switch_id.className = menu_status["query_items"];
-          alert(menu_status["query_items"]);
           var switch_id = document.getElementById("setting_items");
           switch_id.className = menu_status["setting_items"];
         }
     }
-
-    //$(function() {
-      
-      $( "#start" ).datepicker();
-      $( "#end" ).datepicker();
-    //});
   </script>
 </head>
