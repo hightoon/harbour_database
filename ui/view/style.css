@@ -13,8 +13,8 @@
   height: 100%;
   display: flex;
   flex-wrap: wrap;
-  display: -ms-flexbox;
-  -ms-flex-direction: row;
+  #display: -ms-flexbox;
+  #-ms-flex-direction: row;
   #display: -webkit-flex; /* Safari */
   #-webkit-flex-wrap: wrap; /* Safari 6.1+ */
   #display: -moz-box;
