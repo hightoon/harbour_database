@@ -55,8 +55,8 @@
               <span>肽位: </span>
               <!--input type="text" id="tw" name="tw" /-->
               <select id="tw" name="tw">
-                <option value="l" selected>左</option>
-                <option value="r">右</option>
+                <option value="左" selected>左</option>
+                <option value="右">右</option>
               </select>
             </label>
             <label for="pwyxq">

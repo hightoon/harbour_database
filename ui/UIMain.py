@@ -127,6 +127,10 @@ def cons_like_clause(like_kv):
   cond_str = ' and '.join(conds)
   return cond_str
 
+def cons_set_clause(kv):
+  values = ['%s=\'%s\''%(k, v) for k, v in kv.items()]
+  set_str = ','.join(values)
+  return set_str
 
 def cons_query_interval(start, end):
   print start, end
@@ -436,6 +440,7 @@ def delvehicle(rowid):
   cur.execute('DELETE FROM vehicleinfo WHERE rowid=%s'%(rowid,))
   dbconn.commit()
   dbconn.close()
+  send_sql('DELETE FROM vehicleinfo WHERE rowid=%s'%(rowid,))
   redirect('/query_vehicle_info')
 
 @route('/query_driver_info')
@@ -488,6 +493,7 @@ def deldriver(rowid):
   cur.execute('DELETE FROM driverinfo_use WHERE rowid=%s'%(rowid,))
   dbconn.commit()
   dbconn.close()
+  send_sql('DELETE FROM driverinfo_use WHERE rowid=%s'%(rowid,))
   redirect('/query_driver_info')
 
 @route('/query_ship')
@@ -541,6 +547,7 @@ def deldriver(rowid):
   cur.execute('DELETE FROM crs_shp_table WHERE rowid=%s'%(rowid,))
   dbconn.commit()
   dbconn.close()
+  send_sql('DELETE FROM crs_shp_table WHERE rowid=%s'%(rowid,))
   redirect('/query_ship')
 
 @route('/vehicles')
@@ -580,6 +587,43 @@ def add_vehicle():
   send_sql(sql)
   redirect('/vehicles')
 
+@route('/vehicle/<rowid>')
+def update(rowid):
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  print 'update vehicle @row ', rowid
+  return template('./view/update_vehicle.tpl', privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user(), rowid=rowid,
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
+
+@route('/vehicle/<rowid>', method='POST')
+def update(rowid):
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  tab_cols = sch.sql_table_columns['vehicleinfo']
+  user_input = {}
+  cols = re.findall('([A-Z]+)', tab_cols)
+  for col in cols:
+    colname = col.lower()
+    colval = request.forms.get(colname)
+    if colval:
+      user_input[col] = colval
+  print  'update', rowid
+  sql = 'UPDATE vehicleinfo SET ' + cons_set_clause(user_input) + ' WHERE rowid=%s'%(rowid,)
+  print sql
+  dbconn = sdb.connect()
+  dbconn.text_factory = str
+  cur = dbconn.cursor()
+  cur.execute(sql)
+  dbconn.commit()
+  dbconn.close()
+  send_sql(sql)
+  redirect('/query_vehicle')
+
 @route('/drivers')
 def add_driver():
   act_user = get_act_user()
@@ -614,6 +658,40 @@ def add_driver():
   sql = 'insert into driverinfo_use values (%s)'%(','.join(user_input),)
   send_sql(sql)
   redirect('/drivers')
+
+@route('/driver/<rowid>')
+def update(rowid):
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  return template('./view/update_driver.tpl', privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user(), rowid=rowid,
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
+
+@route('/driver/<rowid>', method='POST')
+def update(rowid):
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  tab_cols = sch.sql_table_columns['driverinfo_use']
+  user_input = {}
+  cols = re.findall('([A-Z]+)', tab_cols)
+  for col in cols:
+    colname = col.lower()
+    colval = request.forms.get(colname)
+    if colval:
+      user_input[col] = colval
+  sql = 'UPDATE driverinfo_use SET ' + cons_set_clause(user_input) + ' WHERE rowid=%s'%(rowid,)
+  dbconn = sdb.connect()
+  dbconn.text_factory = str
+  cur = dbconn.cursor()
+  cur.execute(sql)
+  dbconn.commit()
+  dbconn.close()
+  send_sql(sql)
+  redirect('/query_driver_info')
 
 @route('/companies')
 def add_company():
@@ -651,6 +729,41 @@ def add_company():
   send_sql(sql)
   redirect('/companies')
 
+@route('/company/<rowid>')
+def update(rowid):
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  return template('./view/update_company.tpl', privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user(), rowid=rowid,
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
+
+@route('/company/<rowid>', method='POST')
+def update(rowid):
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  tab_cols = sch.sql_table_columns['company_table']
+  user_input = {}
+  cols = re.findall('([A-Z]+)', tab_cols)
+  for col in cols:
+    colname = col.lower()
+    colval = request.forms.get(colname)
+    if colval:
+      user_input[col] = colval
+  sql = 'UPDATE company_table SET ' + cons_set_clause(user_input) + ' WHERE rowid=%s'%(rowid,)
+  print sql
+  dbconn = sdb.connect()
+  dbconn.text_factory = str
+  cur = dbconn.cursor()
+  cur.execute(sql)
+  dbconn.commit()
+  dbconn.close()
+  send_sql(sql)
+  redirect('/query_company')
+
 @route('/ships')
 def add_ship():
   act_user = get_act_user()
@@ -685,6 +798,40 @@ def add_ship():
   sql = 'insert into crs_shp_table values (%s)'%(','.join(user_input),)
   send_sql(sql)
   redirect('/ships')
+
+@route('/ship/<rowid>')
+def update(rowid):
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  return template('./view/update_ship.tpl', privs=UserDb.get_privilege(act_user.role),
+                  curr_user=get_act_user(), rowid=rowid,
+                  querydisp=get_query_disp(), settingdisp=get_setting_disp())
+
+@route('/ship/<rowid>', method='POST')
+def update(rowid):
+  act_user = get_act_user()
+  if act_user is None:
+    redirect('/')
+  act_user = UserDb.get(act_user)
+  tab_cols = sch.sql_table_columns['crs_shp_table']
+  user_input = {}
+  cols = re.findall('([A-Z]+)', tab_cols)
+  for col in cols:
+    colname = col.lower()
+    colval = request.forms.get(colname)
+    if colval:
+      user_input[col] = colval
+  sql = 'UPDATE crs_shp_table SET ' + cons_set_clause(user_input) + ' WHERE rowid=%s'%(rowid,)
+  dbconn = sdb.connect()
+  dbconn.text_factory = str
+  cur = dbconn.cursor()
+  cur.execute(sql)
+  dbconn.commit()
+  dbconn.close()
+  send_sql(sql)
+  redirect('/query_ship')
 
 @route('/setting')
 def setting():
