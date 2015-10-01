@@ -205,6 +205,9 @@
       </div>
     </div>
   </div>
+  <script type="text/javascript" src="/static/js/checkboxtree-0.5.2/library/jquery-1.4.4.js"></script>
+  <script type="text/javascript" src="/static/js/checkboxtree-0.5.2/library/jquery-ui-1.8.12.custom/js/jquery-ui-1.8.12.custom.min.js"></script>
+  <script type="text/javascript" src="/static/js/checkboxtree-0.5.2/jquery.checkboxtree.js"></script>
   <script type="text/javascript">
     $('#access-tree').checkboxTree();
   </script>
