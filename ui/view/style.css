@@ -103,6 +103,17 @@ ul, li {
   height: 800px;
 }
 
+#logo-img {
+  text-align: center;
+  margin-left: 28%;
+}
+
+#logo-img-home {
+  margin-left: 10%;
+  width: 300px;
+  height: 75px;
+}
+
 .col-1 {
   width: 8.33%;
 }

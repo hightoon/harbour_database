@@ -12,6 +12,7 @@
       <!--div class="col-2"></div-->
       <!--div class="col-12" id="login-header"><h2>上海边境数据库管理系统</h2></div-->
       <!--div class="col-2"></div-->
+      <img id="logo-img" src="/static/view/images/bj-logo.png" alt="logo" />
     </div>
     <div class="row">
       <!--div class="col-4"></div-->
