@@ -214,6 +214,10 @@ color: #B0B0B0;
   display: block;
 }
 
+.nowrap {
+    white-space: nowrap;
+}
+
 #welcome-bar {
   text-align: center;
   background-color: #2B547E;
@@ -290,7 +294,6 @@ table {
   color: black;
   padding: 3px;
 }
-*/
 table {
   padding: 10px;
   border-collapse: collapse;
@@ -306,7 +309,7 @@ td {
   border: 2px solid;
   padding: 8px;
 }
-
+*/
 #vehicle-manage-page input {
   width: 120px;
 }

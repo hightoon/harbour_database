@@ -25,9 +25,9 @@
               </label>
             </p>
             <p>
-              <label for="vehicle">
+              <label for="vechicle">
                 <span>船舶信息: </span>
-                <input type="text" id="vehicle" name="vehicle" />
+                <input type="text" id="vechicle" name="vechicle" />
               </label>
               <label for="catlog">
                 <span>类别: </span>
@@ -50,8 +50,8 @@
               <label for="harbour">
                 <span>港口: </span>
                   <select id="harbour" name="harbour">
-                    <option value="横沙渔港">横沙渔港1号</option>
-                    <option value="横沙渔港">横沙渔港2号</option>
+                    <option value="横沙渔港1号">横沙渔港1号</option>
+                    <option value="横沙渔港2号">横沙渔港2号</option>
                     <option value="" selected>全部</option>
                   </select>
               </label>
@@ -89,6 +89,7 @@
               </label>
             </p>
             <input type="submit" value="查询" />
+            <button type="submit" name="export" value="yes">导出</button>
           </form>
         %elif query_tbl == 'vehicle_recs':
         <h4 id="query-vehicles">查询 >>> 车辆进出纪录</h4>
@@ -126,6 +127,7 @@
               </label>
           </p>
           <input type="submit" value="查询" />
+          <button type="submit" name="export" value="yes">导出</button>
         </form>
         %elif query_tbl == 'company':
         <h4 id="query-company">查询 >>> 公司信息</h4>
@@ -175,31 +177,32 @@
         <br/><br/>
         %if query_results:
         <h5>查询结果</h5>
-        <table class="query-results">
+        <!--table class="query-results"-->
+        <table class="table table-bordered table-condensed">
           <tr>
             %for field in query_results[0]:
-              <th>{{field}}</th>
+              <th class="nowrap">{{field}}</th>
             %end
-            <th>操作</th>
+            <th class="nowrap">操作</th>
           </tr>
           %for item in query_results[1:]:
             <tr>
             %for field in item:
-              <td>
+              <td class="nowrap">
                 %if str(field).endswith("jpg") or str(field).endswith("JPG"):
-                  <img src="/static/./{{field}}" alt={{field}} width="140" height="100">
+                  <a href="/static/./{{field}}">点击查看</a>
                 %else:
                   {{field}}
                 %end
               </td>
             %end
             %if 'recs' not in query_tbl:
-            <td>
+            <td class="nowrap">
               <button type="button" onclick="if (confirm('操作无法撤销!确认删除?')){location.href='/del{{query_tbl}}/{{item[0]}}';}">删除</button>
               <button onclick="window.open('/{{query_tbl}}/{{item[0]}}', '记录更新', ' scrollbars=yes, width=900, height=800');">更新</button>
             </td>
             %else:
-            <td>无可用操作</td>
+            <td class="nowrap">无可用操作</td>
             %end
             </tr>
           %end

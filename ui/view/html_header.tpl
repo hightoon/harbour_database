@@ -2,7 +2,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>数据库管理系统</title>
-  <!--link rel="stylesheet" type="text/css" href="/static/view/bsfiles/css/bootstrap.min.css"-->
+  <link rel="stylesheet" type="text/css" href="/static/view/bsfiles/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="/static/view/style.css">
   <link rel="stylesheet" type="text/css" href="/static/view/jquery-ui.css">
   <link rel="stylesheet" type="text/css" href="/static/js/jquery-ui-1.11.4.custom/jquery-ui.css">

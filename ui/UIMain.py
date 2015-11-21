@@ -6,9 +6,11 @@
   Author: haitong.chen@gmail.com
 """
 import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 sys.path.append('..')
 
-import time, urllib2, sqlite3, re, socket, os
+import time, urllib2, sqlite3, re, socket, os, csv
 import ServerDbLite as sdb
 import SqlCmdHelper as sch
 import time, urllib2, sqlite3
@@ -275,9 +277,10 @@ def query_driver():
   cur = dbconn.cursor()
   final_cond = ' and '.join([subcond for subcond in (where_str, like_str, interval_str) if subcond])
   final_query_str = "SELECT * FROM driver_rec_table"
+
   if final_cond:
     final_query_str += " WHERE " + final_cond
-  print final_query_str
+
   cur.execute(final_query_str, query_cond)
   res = cur.fetchall()
   cur.close()
@@ -286,6 +289,13 @@ def query_driver():
     if not os.path.isfile(drvrec[-1]):
       if drvrec[-1].endswith('.jpg'):
         retr_img_from_ftp(drvrec[-1])
+  if request.forms.get('export'):
+    csvname = datetime.strftime(datetime.now(), '%Y%m%dT%H%M%S') + '.csv'
+    with open(csvname, 'wb') as csvfile:
+      writer = csv.writer(csvfile, dialect='excel')
+      writer.writerow(driver_rec_hdr)
+      writer.writerows(res)
+    return '<p>数据已导出，点击下载文件<a href="/static/%s">%s</a></p>'%(csvname, csvname)
   return template('./view/query.tpl',
           query_results=[driver_rec_hdr]+res, query_tbl='driver_recs',
           stations=list(set(sdb.get_stations_from_driver_recs())),
@@ -341,6 +351,13 @@ def query_vehicle():
     if not os.path.isfile(vhlrec[-2]):
       if vhlrec[-2].endswith('.jpg'):
         retr_img_from_ftp(vhlrec[-2])
+  if request.forms.get('export'):
+    csvname = datetime.strftime(datetime.now(), '%Y%m%dT%H%M%S') + '.csv'
+    with open(csvname, 'wb') as csvfile:
+      writer = csv.writer(csvfile, dialect='excel')
+      writer.writerow(veh_rec_hdr)
+      writer.writerows(res)
+    return '<p>数据已导出，点击下载文件<a href="/static/%s">%s</a></p>'%(csvname, csvname)
   return template('./view/query.tpl',
           query_results=[veh_rec_hdr]+res, query_tbl='vehicle_recs',
           privs=UserDb.get_privilege(act_user.role),
