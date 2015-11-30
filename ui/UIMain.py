@@ -298,9 +298,13 @@ def query_driver():
 
   if isalarm:
     arecs = []
+    checked = []
     for r in res:
+      if r[0] in checked:
+        continue
+      else:
+        checked.append(r[0])
       if r[3] in off_ships:
-        off_ships.remove(r[3])
         if (r[1]=='临时登轮证' or r[1]=='长期登轮证') and ('出门' in r[7]):
           arecs.append(r)
         elif (r[1]=='船员登陆证' or r[1]=='台湾船员登陆证' or r[1]=='临时入境许可')\
@@ -308,8 +312,9 @@ def query_driver():
           arecs.append(r)
         else:
           pass
-
     res = arecs
+
+    print checked
 
   for drvrec in res:
     if not os.path.isfile(drvrec[-1]):
