@@ -23,8 +23,6 @@
                 <span>姓名: </span>
                 <input type="text" id="name" name="name" />
               </label>
-            </p>
-            <p>
               <label for="vechicle">
                 <span>船舶信息: </span>
                 <input type="text" id="vechicle" name="vechicle" />
@@ -55,8 +53,6 @@
                     <option value="" selected>全部</option>
                   </select>
               </label>
-            </p>
-            <p>
               <label for="station">
                 <span>边检站: </span>
                 <select id="station" name="station">
@@ -107,10 +103,8 @@
                 <span>车牌: </span>
                 <input type="text" id="plate" name="plate" />
               </label>
-          </p>
-          <p>
               <label for="company">
-                <span>车牌: </span>
+                <span>公司信息: </span>
                 <input type="text" id="company" name="company" />
               </label>
               <label for="idnum">

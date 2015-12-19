@@ -16,17 +16,38 @@
               <input type="text" id="hc" name="hc" />
               <strong><abbr title="required">*</abbr></strong>
             </label>
-		  </p>
-		  <p>
-            <label for="cbjsbs">
-              <span>船舶检索标识: </span>
-              <input type="text" id="cbjsbs" name="cbjsbs" />
-            </label>
             <label for="cbdh">
               <span>MMSI号: </span>
               <input type="text" id="cbdh" name="cbdh" />
               <strong><abbr title="required">*</abbr></strong>
             </label>
+            <label for="imo">
+              <span>IMO号: </span>
+              <input type="text" id="imo" name="imo" />
+              <strong><abbr title="required">*</abbr></strong>
+            </label>
+            <label for="czy">
+              <span>操作员: </span>
+              <input type="text" id="czy" name="czy" />
+              <strong><abbr title="required">*</abbr></strong>
+            </label>
+            <label for="czsj">
+              <span>操作时间: </span>
+              <input type="text" id="czsj" name="czsj" placeholder="2011-12-13 14:15"/>
+              <strong><abbr title="required">*</abbr></strong>
+            </label>
+            <label for="qfr">
+              <span>启封人: </span>
+              <input type="text" id="qfr" name="qfr" />
+              <strong><abbr title="required">*</abbr></strong>
+            </label>
+		      </p>
+		      <p>
+            <label for="cbjsbs">
+              <span>船舶检索标识: </span>
+              <input type="text" id="cbjsbs" name="cbjsbs" />
+            </label>
+            
             <label for="jtgjlxdm">
               <span>交通工具类型代码: </span>
               <input type="text" id="jtgjlxdm" name="jtgjlxdm" />
@@ -48,17 +69,6 @@
               <span>船舶英文名称: </span>
               <input type="text" id="ywcbm" name="ywcbm" />
             </label>
-          </p>
-          <p>
-            <label for="imo">
-              <span>IMO号: </span>
-              <input type="text" id="imo" name="imo" />
-              <strong><abbr title="required">*</abbr></strong>
-              <!--select id="tw" name="tw">
-                <option value="l" selected>左</option>
-                <option value="r">右</option>
-              </select-->
-            </label>
             <label for="gjhh">
               <span>国际呼号: </span>
               <input type="text" id="gjhh" name="gjhh" />
@@ -67,8 +77,6 @@
               <span>国籍地区代码: </span>
               <input type="text" id="gjdqdm" name="gjdqdm" />
             </label>
-          </p>
-          <p>
             <label for="cybgbs">
               <span>船员变更标识: </span>
               <input type="text" id="cybgbs" name="cybgbs" />
@@ -87,8 +95,6 @@
                 <option value="出港">出港</option>
               </select>
             </label>
-          </p>
-          <p>
             <label for="dqjczt">
               <span>当前检查状态: </span>
               <!--input type="text" id="ksys" name="ksys" /-->
@@ -106,18 +112,6 @@
               <span>口岸代码: </span>
               <input type="text" id="kadm" name="kadm" />
             </label>
-            <label for="czy">
-              <span>操作员: </span>
-              <input type="text" id="czy" name="czy" />
-              <strong><abbr title="required">*</abbr></strong>
-            </label>
-          </p>
-          <p>
-            <label for="czsj">
-              <span>操作时间: </span>
-              <input type="text" id="czsj" name="czsj" placeholder="2011-12-13 14:15"/>
-              <strong><abbr title="required">*</abbr></strong>
-            </label>
             <label for="cjg">
               <span>船籍港: </span>
               <input type="text" id="cjg" name="cjg" />
@@ -126,8 +120,6 @@
               <span>当前停靠地(码头): </span>
               <input type="text" id="dqtkmt" name="dqtkmt" />
             </label>
-          </p>
-          <p>
             <label for="dqtkbw">
               <span>当前停靠地(泊位): </span>
               <input type="text" id="dqtkbw" name="dqtkbw" />
@@ -140,42 +132,31 @@
               <span>加封人: </span>
               <input type="text" id="jfr" name="jfr" />
             </label>
-		  </p>
-		  <p>
             <label for="jfsj">
               <span>加封时间: </span>
               <input type="text" id="jfsj" name="jfsj" />
             </label>
-			<label for="qfr">
-              <span>启封人: </span>
-              <input type="text" id="qfr" name="qfr" />
-              <strong><abbr title="required">*</abbr></strong>
-            </label>
-			<label for="qfsj">
+			      <label for="qfsj">
               <span>启封时间: </span>
               <input type="text" id="qfsj" name="qfsj" />
             </label>
-          </p>
-		  <p>
             <label for="wqdy">
               <span>武器弹药: </span>
               <input type="text" id="wqdy" name="wqdy" />
             </label>
-			<label for="jfkadm">
+			      <label for="jfkadm">
               <span>加封口岸: </span>
               <input type="text" id="jfkadm" name="jfkadm" />
             </label>
-			<label for="qfkadm">
+			      <label for="qfkadm">
               <span>启封口岸: </span>
               <input type="text" id="qfkadm" name="qfkadm" />
             </label>
-          </p>
-		  <p>
             <label for="tjbz">
               <span>优检标志: </span>
               <input type="text" id="tjbz" name="tjbz" />
             </label>
-			<label for="status">
+			      <label for="status">
               <span>船舶状态: </span>
               <input type="text" id="status" name="status" />
             </label>

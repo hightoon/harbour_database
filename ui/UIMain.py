@@ -64,7 +64,6 @@ def retr_img_from_ftp(filename):
   usr, passwd = '111111', '111111'
   hosts = ['172.16.0.101', '172.16.0.108']
   ret = True
-  print '从卡口电脑获取照片...'
   with open(filename, 'wb') as lf:
     for host in hosts:
       try:
@@ -305,16 +304,14 @@ def query_driver():
       else:
         checked.append(r[0])
       if r[3] in off_ships:
-        if (r[1]=='临时登轮证' or r[1]=='长期登轮证') and ('出门' in r[7]):
+        if (r[1]=='临时登轮证' or r[1]=='长期登轮证') and ('进门' in r[7]):
           arecs.append(r)
         elif (r[1]=='船员登陆证' or r[1]=='台湾船员登陆证' or r[1]=='临时入境许可')\
-              and ('进门' in r[7]):
+              and ('出门' in r[7]):
           arecs.append(r)
         else:
           pass
     res = arecs
-
-    print checked
 
   for drvrec in res:
     if not os.path.isfile(drvrec[-1]):
@@ -328,7 +325,7 @@ def query_driver():
       writer = csv.writer(csvfile, dialect='excel')
       writer.writerow(driver_rec_hdr)
       writer.writerows(res)
-    return '<p>数据已导出，点击下载文件<a href="/static/%s">%s</a></p>'%(csvname, csvname)
+    return '<p>数据已导出，点击右键另存为<a href="/static/%s">%s</a></p>'%(csvname, csvname)
 
   return template('./view/query.tpl',
           query_results=[driver_rec_hdr]+res, query_tbl='driver_recs',
@@ -391,7 +388,7 @@ def query_vehicle():
       writer = csv.writer(csvfile, dialect='excel')
       writer.writerow(veh_rec_hdr)
       writer.writerows(res)
-    return '<p>数据已导出，点击下载文件<a href="/static/%s">%s</a></p>'%(csvname, csvname)
+    return '<p>数据已导出，点击右键另存为<a href="/static/%s">%s</a></p>'%(csvname, csvname)
   return template('./view/query.tpl',
           query_results=[veh_rec_hdr]+res, query_tbl='vehicle_recs',
           privs=UserDb.get_privilege(act_user.role),

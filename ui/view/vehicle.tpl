@@ -16,6 +16,16 @@
               <input type="text" id="wycph" name="wycph" />
               <strong><abbr title="required">*</abbr></strong>
             </label>
+            <label for="czy">
+              <span>录入检查员代码: </span>
+              <input type="text" id="czy" name="czy" />
+              <strong><abbr title="required">*</abbr></strong>
+            </label>
+            <label for="czsj">
+              <span>录入时间: </span>
+              <input type="text" id="czsj" name="czsj" placeholder="2011-12-13 10:00"/>
+              <strong><abbr title="required">*</abbr></strong>
+            </label>
             <label for="gsqc">
               <span>公司全称: </span>
               <input type="text" id="gsqc" name="gsqc" />
@@ -49,8 +59,6 @@
               <span>车辆高度: </span>
               <input type="text" id="clgd" name="clgd" />
             </label>
-          </p>
-          <p>
             <label for="tw">
               <span>肽位: </span>
               <!--input type="text" id="tw" name="tw" /-->
@@ -81,8 +89,6 @@
               <span>现批文号码: </span>
               <input type="text" id="pwh" name="pwh" />
             </label>
-          </p>
-          <p>
             <label for="ksys">
               <span>款式颜色: </span>
               <input type="text" id="ksys" name="ksys" />
@@ -101,18 +107,6 @@
               <span>内地承办单位(合营单位): </span>
               <input type="text" id="cbdw" name="cbdw" />
             </label>
-            <label for="czy">
-              <span>录入检查员代码: </span>
-              <input type="text" id="czy" name="czy" />
-              <strong><abbr title="required">*</abbr></strong>
-            </label>
-            <label for="czsj">
-              <span>录入时间: </span>
-              <input type="text" id="czsj" name="czsj" placeholder="2011-12-13 10:00"/>
-              <strong><abbr title="required">*</abbr></strong>
-            </label>
-          </p>
-          <p>
             <label for="czkadm">
               <span>操作口岸代码: </span>
               <input type="text" id="czkadm" name="czkadm" />

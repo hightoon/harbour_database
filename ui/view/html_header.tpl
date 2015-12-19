@@ -20,6 +20,15 @@
       $( "#enddate" ).datepicker();
       $( "#start" ).datepicker();
       $( "#end" ).datepicker();
+      $( "#czsj" ).datepicker();
+      $( "#pwyxq" ).datepicker();
+      $( "#txyxq" ).datepicker();
+      $( "#jfsj" ).datepicker();
+      $( "#qfsj" ).datepicker();
+      $( "#csrq" ).datepicker();
+      $( "#d2csrq" ).datepicker();
+      $( "#qzqzyxq" ).datepicker();
+      $( "#zjqzyxq" ).datepicker();
     });
 
     menu_status = new Array();
