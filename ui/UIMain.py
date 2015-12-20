@@ -90,6 +90,20 @@ def get_hosts():
   fd.close()
   return hosts
 
+def decode_utf8(tup_lst):
+  """
+    decode the input list of tuples of utf8 encoded strings
+    [('string_in_utf8', ),('string_in_utf8),...]
+  """
+  decoded = []
+  dec_tup = []
+  for t in tup_lst:
+    for i in t:
+      dec_tup.append(i.decode('utf8'))
+    decoded.append(tuple(dec_tup))
+    dec_tup = []
+  return decoded
+
 def send_sql(sql):
   HOST, PORT = '172.16.0.101', 9998
   sock1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -292,8 +306,6 @@ def query_driver():
   cur.execute("SELECT ZWCBM, YWCBM FROM crs_shp_table WHERE STATUS like \'%%%s%%\'"%('离港',))
   off_ships = cur.fetchall()
   off_ship = [ship[0] or ship[1] for ship in off_ships]
-  print off_ship[0].decode('utf8')
-  print u'探险号'
   dbconn.close()
 
   if isalarm:
@@ -326,7 +338,7 @@ def query_driver():
     with open(csvname, 'wb') as csvfile:
       writer = csv.writer(csvfile, dialect='excel')
       writer.writerow(driver_rec_hdr)
-      writer.writerows(res)
+      writer.writerows(decode_utf8(res))
     return '<p>数据已导出，点击右键另存为<a href="/static/%s">%s</a></p>'%(csvname, csvname)
 
   return template('./view/query.tpl',
