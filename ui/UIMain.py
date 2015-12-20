@@ -292,7 +292,8 @@ def query_driver():
   cur.execute("SELECT ZWCBM, YWCBM FROM crs_shp_table WHERE STATUS like \'%%%s%%\'"%('离港',))
   off_ships = cur.fetchall()
   off_ship = [ship[0] or ship[1] for ship in off_ships]
-  print off_ship
+  print off_ship[0].decode('utf8')
+  print u'探险号'
   dbconn.close()
 
   if isalarm:
@@ -303,7 +304,8 @@ def query_driver():
         continue
       else:
         checked.append(r[0])
-      if r[3] in off_ships:
+      if r[3] in off_ship:
+        print u'进门', '  ', r[7].decode('utf8')
         if (r[1]=='临时登轮证' or r[1]=='长期登轮证') and ('进门' in r[7]):
           arecs.append(r)
         elif (r[1]=='船员登陆证' or r[1]=='台湾船员登陆证' or r[1]=='临时入境许可')\
@@ -1135,14 +1137,16 @@ def test_ftp():
 def main():
   sdb.main()
   init_db()
+  """
   dbporc = Process(target=sdb.run_sock_svr, args=())
   dbporc.start()
   websvr = Process(target=run, args=(app, 'wsgiref', '0.0.0.0', '8081'))
   websvr.start()
   dbporc.join()
   websvr.join()
+  """
   #run(host='localhost', port=8081, Debug=True, reloader=False)
-  #run(host='localhost', port=80, Debug=True)
+  run(app, host='0.0.0.0', port=8081, server='cherrypy')
 
 
 if __name__ == '__main__':
