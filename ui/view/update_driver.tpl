@@ -12,57 +12,53 @@
           <p>
             <label for="tlq">
               <span>停留期: </span>
-              <input type="text" id="tlq" name="tlq" />
+              <input type="text" id="tlq" name="tlq" value={{default_data['tlq']}}>
             </label>
             <label for="qwgdm">
               <span>前往国: </span>
-              <input type="text" id="qwgdm" name="qwgdm" />
+              <input type="text" id="qwgdm" name="qwgdm" value={{default_data['qwgdm']}}>
             </label>
             <label for="lzgdm">
               <span>来自国: </span>
-              <input type="text" id="lzgdm" name="lzgdm" />
+              <input type="text" id="lzgdm" name="lzgdm" value={{default_data['lzgdm']}}>
             </label>
             <label for="xkzh">
               <span>许可证号: </span>
-              <input type="text" id="xkzh" name="xkzh" />
+              <input type="text" id="xkzh" name="xkzh" value={{default_data['xkzh']}}>
             </label>
           </p>
           <p>
             <label for="sfzh">
               <span>身份证号: </span>
-              <input type="text" id="sfzh" name="sfzh" />
+              <input type="text" id="sfzh" name="sfzh" value={{default_data['sfzh']}}>
             </label>
             <label for="d2xm">
               <span>第2姓名: </span>
-              <input type="text" id="d2xm" name="d2xm">
+              <input type="text" id="d2xm" name="d2xm" value={{default_data['d2xm']}}>
             </label>
             <label for="d2csrq">
               <span>第2出生日期: </span>
-              <input type="text" id="d2csrq" name="d2csrq" />
+              <input type="text" id="d2csrq" name="d2csrq" value={{default_data['d2csrq']}}>
             </label>
           </p>
           <p>
             <label for="d2zjhm">
               <span>第二证件号码: </span>
-              <input type="text" id="d2zjhm" name="d2zjhm" />
-              <!--select id="tw" name="tw">
-                <option value="l" selected>左</option>
-                <option value="r">右</option>
-              </select-->
+              <input type="text" id="d2zjhm" name="d2zjhm" value={{default_data['d2zjhm']}}>
             </label>
             <label for="d2zjlbdm">
               <span>第二证件类别代码: </span>
-              <input type="text" id="d2zjlbdm" name="d2zjlbdm" />
+              <input type="text" id="d2zjlbdm" name="d2zjlbdm" value={{default_data['d2zjlbdm']}}>
             </label>
             <label for="txkadm">
               <span>通行口岸代码: </span>
-              <input type="text" id="txkadm" name="txkadm" />
+              <input type="text" id="txkadm" name="txkadm" value={{default_data['txkadm']}}>
             </label>
           </p>
           <p>
             <label for="mzdm">
               <span>民族代码: </span>
-              <input type="text" id="mzdm" name="mzdm" />
+              <input type="text" id="mzdm" name="mzdm" value={{default_data['mzdm']}}>
             </label>
             <label for="tybz">
               <span>通用标志: </span>
@@ -81,25 +77,25 @@
           <p>
             <label for="czsj">
               <span>操作（录入）时间: </span>
-              <input type="text" id="czsj" name="czsj" placeholder="2011-12-13 14:15"/>
+              <input type="text" id="czsj" name="czsj" value={{default_data['czsj']}}>
             </label>
             <label for="czkadm">
               <span>操作口岸: </span>
-              <input type="text" id="czkadm" name="czkadm" />
+              <input type="text" id="czkadm" name="czkadm" value={{default_data['czkadm']}}>
             </label>
             <label for="bz">
               <span>备注: </span>
-              <input type="text" id="bz" name="bz" />
+              <input type="text" id="bz" name="bz" value={{default_data['bz']}}>
             </label>
           </p>
           <p>
             <label for="qzh">
               <span>签证号: </span>
-              <input type="text" id="qzh" name="qzh" />
+              <input type="text" id="qzh" name="qzh" value={{default_data['qzh']}}>
             </label>
             <label for="zjhm">
               <span>证件号码: </span>
-              <input type="text" id="zjhm" name="zjhm" />
+              <input type="text" id="zjhm" name="zjhm" value={{default_data['zjhm']}}>
             </label>
             <label for="zjlbdm">
               <span>证件种类: </span>
@@ -114,53 +110,53 @@
           <p>
             <label for="xm">
               <span>姓名: </span>
-              <input type="text" id="xm" name="xm" />
+              <input type="text" id="xm" name="xm" value={{default_data['xm']}}>
             </label>
             <label for="xbdm">
               <span>性别: </span>
-              <input type="text" id="xbdm" name="xbdm" />
+              <input type="text" id="xbdm" name="xbdm" value={{default_data['xbdm']}}>
             </label>
             <label for="csrq">
               <span>出生日期: </span>
-              <input type="text" id="csrq" name="csrq" />
+              <input type="text" id="csrq" name="csrq" value={{default_data['csrq']}}>
             </label>
             <label for="gjdm">
               <span>国籍代码: </span>
-              <input type="text" id="gjdm" name="gjdm" />
+              <input type="text" id="gjdm" name="gjdm" value={{default_data['gjdm']}}>
             </label>
           </p>
           <p>
             <label for="sqbh">
               <span>申请表号: </span>
-              <input type="text" id="sqbh" name="sqbh" />
+              <input type="text" id="sqbh" name="sqbh" value={{default_data['sqbh']}}>
             </label>
             <label for="zjqzyxq">
               <span>准驾签注有效期: </span>
-              <input type="text" id="zjqzyxq" name="zjqzyxq" />
+              <input type="text" id="zjqzyxq" name="zjqzyxq" value={{default_data['zjqzyxq']}}>
             </label>
             <label for="gsqc">
               <span>公司全称: </span>
-              <input type="text" id="gsqc" name="gsqc" />
+              <input type="text" id="gsqc" name="gsqc" value={{default_data['gsqc']}}>
             </label>
           </p>
           <p>
             <label for="qzqzdm">
               <span>签证签注代码: </span>
-              <input type="text" id="qzqzdm" name="qzqzdm" />
+              <input type="text" id="qzqzdm" name="qzqzdm" value={{default_data['qzqzdm']}}>
             </label>
             <label for="fzjgdm">
               <span>发证机关代码: </span>
-              <input type="text" id="fzjgdm" name="fzjgdm" />
+              <input type="text" id="fzjgdm" name="fzjgdm" value={{default_data['fzjgdm']}}>
             </label>
           </p>
           <p>
             <label for="qzqzyxq">
               <span>签证签注有效期: </span>
-              <input type="text" id="qzqzyxq" name="qzqzyxq" />
+              <input type="text" id="qzqzyxq" name="qzqzyxq" value={{default_data['qzqzyxq']}}>
             </label>
             <label for="ickh">
               <span>IC卡号: </span>
-              <input type="text" id="ickh" name="ickh" />
+              <input type="text" id="ickh" name="ickh" value={{default_data['ickh']}}>
             </label>
           </p>
           <input type="submit" value="更新" />

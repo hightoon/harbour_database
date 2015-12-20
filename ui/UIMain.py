@@ -90,6 +90,11 @@ def get_hosts():
   fd.close()
   return hosts
 
+def get_colomns(tabname):
+  tab_cols = sch.sql_table_columns[tabname]
+  cols = re.findall('([A-Z0-9]+)', tab_cols)
+  return cols
+
 def decode_utf8(tup_lst):
   """
     decode the input list of tuples of utf8 encoded strings
@@ -107,7 +112,7 @@ def decode_utf8(tup_lst):
 def send_sql(sql):
   HOST, PORT = '172.16.0.101', 9998
   sock1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-  sock1.settimeout(3.0)
+  sock1.settimeout(2.0)
   try:
       sock1.connect((HOST, PORT))
       sock1.sendall('sql:' + sql + "\n")
@@ -401,7 +406,7 @@ def query_vehicle():
     with open(csvname, 'wb') as csvfile:
       writer = csv.writer(csvfile, dialect='excel')
       writer.writerow(veh_rec_hdr)
-      writer.writerows(res)
+      writer.writerows(decode_utf8(res))
     return '<p>数据已导出，点击右键另存为<a href="/static/%s">%s</a></p>'%(csvname, csvname)
   return template('./view/query.tpl',
           query_results=[veh_rec_hdr]+res, query_tbl='vehicle_recs',
@@ -655,9 +660,20 @@ def update(rowid):
   if act_user is None:
     redirect('/')
   act_user = UserDb.get(act_user)
-  print 'update vehicle @row ', rowid
+  cols = get_colomns('vehicleinfo')
+  num_of_cols = len(cols)
+  dbconn = sdb.connect()
+  dbconn.text_factory = str
+  cur = dbconn.cursor()
+  cur.execute('SELECT * FROM vehicleinfo WHERE rowid=%s'%(rowid,))
+  row = cur.fetchone()
+  dbconn.close()
+  default_data = {}
+  if row:
+    for i in xrange(num_of_cols):
+      default_data[cols[i].lower()] = row[i]
   return template('./view/update_vehicle.tpl', privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), rowid=rowid,
+                  curr_user=get_act_user(), rowid=rowid, default_data=default_data,
                   querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/vehicle/<rowid>', method='POST')
@@ -666,14 +682,13 @@ def update(rowid):
   if act_user is None:
     redirect('/')
   act_user = UserDb.get(act_user)
-  tab_cols = sch.sql_table_columns['vehicleinfo']
+  #tab_cols = sch.sql_table_columns[]
   user_input = {}
-  cols = re.findall('([A-Z]+)', tab_cols)
+  cols = get_colomns('vehicleinfo')
   for col in cols:
     colname = col.lower()
     colval = request.forms.get(colname)
-    if colval:
-      user_input[col] = colval
+    user_input[col] = colval
   print  'update', rowid
   sql = 'UPDATE vehicleinfo SET ' + cons_set_clause(user_input) + ' WHERE rowid=%s'%(rowid,)
   print sql
@@ -684,7 +699,7 @@ def update(rowid):
   dbconn.commit()
   dbconn.close()
   send_sql(sql)
-  redirect('/query_vehicle')
+  redirect('/query_vehicle_info')
 
 @route('/drivers')
 def add_driver():
@@ -698,10 +713,10 @@ def add_driver():
 
 @route('/add_driver', method='POST')
 def add_driver():
-  tab_cols = sch.sql_table_columns['driverinfo_use']
+  #tab_cols = sch.sql_table_columns['driverinfo_use']
   user_input = []
-  cols = re.findall('([A-Z1-9]+)', tab_cols)
-  print cols
+  #cols = re.findall('([A-Z1-9]+)', tab_cols)
+  cols = get_colomns('driverinfo_use')
   for col in cols:
     colname = col.lower()
     user_input.append(request.forms.get(colname))
@@ -727,8 +742,22 @@ def update(rowid):
   if act_user is None:
     redirect('/')
   act_user = UserDb.get(act_user)
+  cols = get_colomns('driverinfo_use')
+  num_of_cols = len(cols)
+  print cols
+  dbconn = sdb.connect()
+  dbconn.text_factory = str
+  cur = dbconn.cursor()
+  cur.execute('SELECT * FROM driverinfo_use WHERE rowid=%s'%(rowid,))
+  row = cur.fetchone()
+  dbconn.close()
+  default_data = {}
+  print row
+  if row:
+    for i in xrange(num_of_cols):
+      default_data[cols[i].lower()] = row[i]
   return template('./view/update_driver.tpl', privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), rowid=rowid,
+                  curr_user=get_act_user(), rowid=rowid, default_data=default_data,
                   querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/driver/<rowid>', method='POST')
@@ -737,14 +766,14 @@ def update(rowid):
   if act_user is None:
     redirect('/')
   act_user = UserDb.get(act_user)
-  tab_cols = sch.sql_table_columns['driverinfo_use']
+  #tab_cols = sch.sql_table_columns['driverinfo_use']
   user_input = {}
-  cols = re.findall('([A-Z]+)', tab_cols)
+  #cols = re.findall('([A-Z]+)', tab_cols)
+  cols = get_colomns('driverinfo_use')
   for col in cols:
     colname = col.lower()
     colval = request.forms.get(colname)
-    if colval:
-      user_input[col] = colval
+    user_input[col] = colval
   sql = 'UPDATE driverinfo_use SET ' + cons_set_clause(user_input) + ' WHERE rowid=%s'%(rowid,)
   dbconn = sdb.connect()
   dbconn.text_factory = str
@@ -768,10 +797,11 @@ def add_company():
 
 @route('/add_company', method='POST')
 def add_company():
-  tab_cols = sch.sql_table_columns['company_table']
+  #tab_cols = sch.sql_table_columns['company_table']
   user_input = []
-  cols = re.findall('([A-Z]+)', tab_cols)
-  print cols
+  #cols = re.findall('([A-Z]+)', tab_cols)
+  cols = get_colomns('company_table')
+
   for col in cols:
     colname = col.lower()
     user_input.append(request.forms.get(colname))
@@ -797,8 +827,20 @@ def update(rowid):
   if act_user is None:
     redirect('/')
   act_user = UserDb.get(act_user)
+  cols = get_colomns('company_table')
+  num_of_cols = len(cols)
+  dbconn = sdb.connect()
+  dbconn.text_factory = str
+  cur = dbconn.cursor()
+  cur.execute('SELECT * FROM company_table WHERE rowid=%s'%(rowid,))
+  row = cur.fetchone()
+  dbconn.close()
+  default_data = {}
+  if row:
+    for i in xrange(num_of_cols):
+      default_data[cols[i].lower()] = row[i]
   return template('./view/update_company.tpl', privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), rowid=rowid,
+                  curr_user=get_act_user(), rowid=rowid, default_data=default_data,
                   querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/company/<rowid>', method='POST')
@@ -807,14 +849,14 @@ def update(rowid):
   if act_user is None:
     redirect('/')
   act_user = UserDb.get(act_user)
-  tab_cols = sch.sql_table_columns['company_table']
+  #tab_cols = sch.sql_table_columns['company_table']
   user_input = {}
-  cols = re.findall('([A-Z]+)', tab_cols)
+  #cols = re.findall('([A-Z]+)', tab_cols)
+  cols = get_colomns('company_table')
   for col in cols:
     colname = col.lower()
     colval = request.forms.get(colname)
-    if colval:
-      user_input[col] = colval
+    user_input[col] = colval
   sql = 'UPDATE company_table SET ' + cons_set_clause(user_input) + ' WHERE rowid=%s'%(rowid,)
   print sql
   dbconn = sdb.connect()
@@ -838,10 +880,10 @@ def add_ship():
 
 @route('/add_ship', method='POST')
 def add_ship():
-  tab_cols = sch.sql_table_columns['crs_shp_table']
+  #tab_cols = sch.sql_table_columns['crs_shp_table']
   user_input = []
-  cols = re.findall('([A-Z1-9]+)', tab_cols)
-  print cols
+  #cols = re.findall('([A-Z1-9]+)', tab_cols)
+  cols = get_colomns('crs_shp_table')
   for col in cols:
     colname = col.lower()
     user_input.append(request.forms.get(colname))
@@ -867,8 +909,20 @@ def update(rowid):
   if act_user is None:
     redirect('/')
   act_user = UserDb.get(act_user)
+  cols = get_colomns('crs_shp_table')
+  num_of_cols = len(cols)
+  dbconn = sdb.connect()
+  dbconn.text_factory = str
+  cur = dbconn.cursor()
+  cur.execute('SELECT * FROM crs_shp_table WHERE rowid=%s'%(rowid,))
+  row = cur.fetchone()
+  dbconn.close()
+  default_data = {}
+  if row:
+    for i in xrange(num_of_cols):
+      default_data[cols[i].lower()] = row[i]
   return template('./view/update_ship.tpl', privs=UserDb.get_privilege(act_user.role),
-                  curr_user=get_act_user(), rowid=rowid,
+                  curr_user=get_act_user(), rowid=rowid, default_data=default_data,
                   querydisp=get_query_disp(), settingdisp=get_setting_disp())
 
 @route('/ship/<rowid>', method='POST')
@@ -877,14 +931,14 @@ def update(rowid):
   if act_user is None:
     redirect('/')
   act_user = UserDb.get(act_user)
-  tab_cols = sch.sql_table_columns['crs_shp_table']
+  #tab_cols = sch.sql_table_columns['crs_shp_table']
   user_input = {}
-  cols = re.findall('([A-Z]+)', tab_cols)
+  #cols = re.findall('([A-Z]+)', tab_cols)
+  cols = get_colomns('crs_shp_table')
   for col in cols:
     colname = col.lower()
     colval = request.forms.get(colname)
-    if colval:
-      user_input[col] = colval
+    user_input[col] = colval
   sql = 'UPDATE crs_shp_table SET ' + cons_set_clause(user_input) + ' WHERE rowid=%s'%(rowid,)
   dbconn = sdb.connect()
   dbconn.text_factory = str

@@ -12,27 +12,27 @@
           <p>
             <label for="wycph">
               <span>唯一车牌号: </span>
-              <input type="text" id="wycph" name="wycph" />
+              <input type="text" id="wycph" name="wycph" value={{default_data['wycph']}}>
             </label>
             <label for="gsqc">
               <span>公司全称: </span>
-              <input type="text" id="gsqc" name="gsqc" />
+              <input type="text" id="gsqc" name="gsqc" value={{default_data['gsqc']}}>
             </label>
           </p>
           <p>
             <label for="jwcph">
               <span>境外车牌号: </span>
-              <input type="text" id="jwcph" name="jwcph" />
+              <input type="text" id="jwcph" name="jwcph" value={{default_data['jwcph']}}>
             </label>
             <label for="jncph">
               <span>境内车牌号: </span>
-              <input type="text" id="jncph" name="jncph" />
+              <input type="text" id="jncph" name="jncph" value={{default_data['jncph']}}>
             </label>
           </p>
           <p>
             <label for="ssgjdm">
               <span>所属国籍: </span>
-              <input type="text" id="ssgjdm" name="ssgjdm" />
+              <input type="text" id="ssgjdm" name="ssgjdm" value={{default_data['ssgjdm']}}>
             </label>
             <label for="cllxdm">
               <span>车辆类型代码: </span>
@@ -46,7 +46,7 @@
             </label>
             <label for="clgd">
               <span>车辆高度: </span>
-              <input type="text" id="clgd" name="clgd" />
+              <input type="text" id="clgd" name="clgd" value={{default_data['clgd']}}>
             </label>
           </p>
           <p>
@@ -60,71 +60,71 @@
             </label>
             <label for="pwyxq">
               <span>批文有效期: </span>
-              <input type="text" id="pwyxq" name="pwyxq" />
+              <input type="text" id="pwyxq" name="pwyxq" value={{default_data['pwyxq']}}>
             </label>
             <label for="txkadm">
               <span>通行口岸代码: </span>
-              <input type="text" id="txkadm" name="txkadm" />
+              <input type="text" id="txkadm" name="txkadm" value={{default_data['txkadm']}}>
             </label>
           </p>
           <p>
             <label for="txyxq">
               <span>通行有效期: </span>
-              <input type="text" id="txyxq" name="txyxq" />
+              <input type="text" id="txyxq" name="txyxq" value={{default_data['txyxq']}}>
             </label>
             <label for="sqbh">
               <span>申请表号: </span>
-              <input type="text" id="sqbh" name="sqbh" />
+              <input type="text" id="sqbh" name="sqbh" value={{default_data['sqbh']}}>
             </label>
             <label for="pwh">
               <span>现批文号码: </span>
-              <input type="text" id="pwh" name="pwh" />
+              <input type="text" id="pwh" name="pwh" value={{default_data['pwh']}}>
             </label>
           </p>
           <p>
             <label for="ksys">
               <span>款式颜色: </span>
-              <input type="text" id="ksys" name="ksys" />
+              <input type="text" id="ksys" name="ksys" value={{default_data['ksys']}}>
             </label>
             <label for="ctz">
               <span>车头字: </span>
-              <input type="text" id="ctz" name="ctz" />
+              <input type="text" id="ctz" name="ctz" value={{default_data['ctz']}}>
             </label>
             <label for="zzdw">
               <span>载重吨位: </span>
-              <input type="text" id="zzdw" name="zzdw" />
+              <input type="text" id="zzdw" name="zzdw" value={{default_data['zzdw']}}>
             </label>
           </p>
           <p>
             <label for="cbdw">
               <span>内地承办单位(合营单位): </span>
-              <input type="text" id="cbdw" name="cbdw" />
+              <input type="text" id="cbdw" name="cbdw" value={{default_data['cbdw']}}>
             </label>
             <label for="czy">
               <span>录入检查员代码: </span>
-              <input type="text" id="czy" name="czy" />
+              <input type="text" id="czy" name="czy" value={{default_data['czy']}}>
             </label>
             <label for="czsj">
               <span>录入时间: </span>
-              <input type="text" id="czsj" name="czsj" placeholder="2011-12-13 10:00"/>
+              <input type="text" id="czsj" name="czsj" value={{default_data['czsj']}}/>
             </label>
           </p>
           <p>
             <label for="czkadm">
               <span>操作口岸代码: </span>
-              <input type="text" id="czkadm" name="czkadm" />
+              <input type="text" id="czkadm" name="czkadm" value={{default_data['czkadm']}}>
             </label>
             <label for="pd">
               <span>主司机: </span>
-              <input type="text" id="pd" name="pd" />
+              <input type="text" id="pd" name="pd" value={{default_data['pd']}}>
             </label>
             <label for="sd">
               <span>副司机: </span>
-              <input type="text" id="sd" name="sd" />
+              <input type="text" id="sd" name="sd" value={{default_data['sd']}}>
             </label>
             <label for="bz">
               <span>备注: </span>
-              <input type="text" id="bz" name="bz" />
+              <input type="text" id="bz" name="bz" value={{default_data['bz']}}>
             </label>
           </p>
           <input type="submit" value="更新" />
