@@ -52,6 +52,19 @@
               <input type="text" id="qzqzyxq" name="qzqzyxq" />
               <strong><abbr title="required">*</abbr></strong>
             </label>
+            <label for="zjlbdm">
+              <span>证件种类: </span>
+              <!--input type="text" id="czsj" name="czsj" /-->
+              <select id="zjlbdm" name="zjlbdm">
+                <option value="14" selected>护照</option>
+                <option value="10">身份证</option>
+              </select>
+            </label>
+            <label for="gsqc">
+              <span>公司全称: </span>
+              <input type="text" id="gsqc" name="gsqc" />
+              <strong><abbr title="required">*</abbr></strong>
+            </label>
             <label for="zjqzyxq">
               <span>准驾签注有效期: </span>
               <input type="text" id="zjqzyxq" name="zjqzyxq" />
@@ -139,20 +152,6 @@
             <label for="gjdm">
               <span>国籍代码: </span>
               <input type="text" id="gjdm" name="gjdm" />
-            </label>
-          </p>
-          <p>
-            <label for="gsqc">
-              <span>公司全称: </span>
-              <input type="text" id="gsqc" name="gsqc" />
-            </label>
-            <label for="zjlbdm">
-              <span>证件种类: </span>
-              <!--input type="text" id="czsj" name="czsj" /-->
-              <select id="zjlbdm" name="zjlbdm">
-                <option value="14" selected>护照</option>
-                <option value="10">身份证</option>
-              </select>
             </label>
           </p>
           <p>

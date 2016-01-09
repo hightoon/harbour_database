@@ -41,8 +41,24 @@
               <input type="text" id="qfr" name="qfr" />
               <strong><abbr title="required">*</abbr></strong>
             </label>
-		      </p>
-		      <p>
+            <label for="zwcbm">
+              <span>船舶中文名称: </span>
+              <input type="text" id="zwcbm" name="zwcbm" />
+              <strong><abbr title="required">*</abbr></strong>
+            </label>
+            <label for="ywcbm">
+              <span>船舶英文名称: </span>
+              <input type="text" id="ywcbm" name="ywcbm" />
+              <strong><abbr title="required">*</abbr></strong>
+            </label>
+            <label for="status">
+              <span>船舶状态: </span>
+              <select id="status" name="status">
+                <option value="在港">在港</option>
+                <option value="离港">离港</option>
+              </select>
+              <strong><abbr title="required">*</abbr></strong>
+            </label>
             <label for="cbjsbs">
               <span>船舶检索标识: </span>
               <input type="text" id="cbjsbs" name="cbjsbs" />
@@ -52,23 +68,11 @@
               <span>交通工具类型代码: </span>
               <input type="text" id="jtgjlxdm" name="jtgjlxdm" />
             </label>
-          </p>
-          <p>
             <label for="cbzldm">
               <span>船舶种类代码: </span>
               <input type="text" id="cbzldm" name="cbzldm" />
             </label>
-            <label for="zwcbm">
-              <span>船舶中文名称: </span>
-			  <input type="text" id="zwcbm" name="zwcbm" />
-              <!--select id="cllxdm" name="cllxdm">
-                <option value="41" selected>货车</option>
-              </select-->
-            </label>
-            <label for="ywcbm">
-              <span>船舶英文名称: </span>
-              <input type="text" id="ywcbm" name="ywcbm" />
-            </label>
+            
             <label for="gjhh">
               <span>国际呼号: </span>
               <input type="text" id="gjhh" name="gjhh" />

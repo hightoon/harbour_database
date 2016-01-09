@@ -29,6 +29,7 @@
             <label for="gsqc">
               <span>公司全称: </span>
               <input type="text" id="gsqc" name="gsqc" />
+              <strong><abbr title="required">*</abbr></strong>
             </label>
           </p>
           <p>

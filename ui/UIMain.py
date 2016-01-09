@@ -14,7 +14,6 @@ sys.path.append('..')
 import time, urllib2, sqlite3, re, socket, os, csv
 import ServerDbLite as sdb
 import SqlCmdHelper as sch
-import time, urllib2, sqlite3
 import SqlCmdHelper
 from datetime import datetime
 from subprocess import Popen
@@ -23,6 +22,9 @@ from bottle import route, request, redirect, template,static_file, run, app, hoo
 from ftplib import FTP
 from beaker.middleware import SessionMiddleware
 import UserDb
+
+sqlcmd_buffer_1 = []
+sqlcmd_buffer_2 = []
 
 
 session_opts = {
@@ -115,9 +117,18 @@ def send_sql(sql):
   sock1.settimeout(2.0)
   try:
       sock1.connect((HOST, PORT))
-      sock1.sendall('sql:' + sql + "\n")
+      if sql:
+        sock1.sendall('sql:' + sql + "\n")
+      while True:
+        try:
+          sqlcmd = sqlcmd_buffer_1.pop()
+          sock1.sendall('sql:' + sqlcmd + '\n')
+          time.sleep(0.01)
+        except:
+          break
   except:
       print 'sock1 connect failed'
+      sqlcmd_buffer_1.append(sql)
   finally:
       sock1.close()
 
@@ -126,9 +137,18 @@ def send_sql(sql):
   sock2.settimeout(3.0)
   try:
       sock2.connect((HOST, PORT))
-      sock2.sendall('sql:' + sql + "\n")
+      if sql:
+        sock2.sendall('sql:' + sql + "\n")
+      while True:
+        try:
+          sqlcmd = sqlcmd_buffer_2.pop()
+          sock2.sendall('sql:' + sqlcmd + '\n')
+          time.sleep(0.01)
+        except:
+          break
   except:
       print 'sock2 connect failed'
+      sqlcmd_buffer_2.append(sql)
   finally:
       sock2.close()
 
@@ -296,22 +316,23 @@ def query_driver():
   else:
     interval_str = ''
   #dbconn = sdb.connect_orclex('haitong', '111111', sdb.DB_URL)
-  dbconn = sdb.connect()
-  dbconn.text_factory = str
-  cur = dbconn.cursor()
   final_cond = ' and '.join([subcond for subcond in (where_str, like_str, interval_str) if subcond])
   final_query_str = "SELECT * FROM driver_rec_table "
 
   if final_cond:
     final_query_str += " WHERE " + final_cond
-
-  cur.execute(final_query_str + " ORDER by date DESC", query_cond)
-  res = cur.fetchall()
-  # get ships moving off
-  cur.execute("SELECT ZWCBM, YWCBM FROM crs_shp_table WHERE STATUS like \'%%%s%%\'"%('离港',))
-  off_ships = cur.fetchall()
-  off_ship = [ship[0] or ship[1] for ship in off_ships]
-  dbconn.close()
+  try:
+    dbconn = sdb.connect()
+    dbconn.text_factory = str
+    cur = dbconn.cursor()
+    cur.execute(final_query_str + " ORDER by date DESC", query_cond)
+    res = cur.fetchall()
+    # get ships moving off
+    cur.execute("SELECT ZWCBM, YWCBM FROM crs_shp_table WHERE STATUS like \'%%%s%%\'"%('离港',))
+    off_ships = cur.fetchall()
+    off_ship = [ship[0] or ship[1] for ship in off_ships]
+  except:
+    return "对不起，数据库访问失败，请稍后再试！"
 
   if isalarm:
     arecs = []
@@ -383,17 +404,22 @@ def query_vehicle():
     interval_str = ' datetime(date) BETWEEN datetime(:start) and datetime(:end)'
   else:
     interval_str = ''
-  dbconn = sdb.connect()
-  dbconn.text_factory = str
-  cur = dbconn.cursor()
+
   final_cond = ' and '.join([subcond for subcond in (where_str, like_str, interval_str) if subcond])
   final_query_str = "SELECT * FROM vehicle_rec_table"
   if final_cond:
     final_query_str += " WHERE " + final_cond
-  cur.execute(final_query_str, query_cond)
-  res = cur.fetchall()
-  cur.close()
-  dbconn.close()
+  try:
+    dbconn = sdb.connect()
+    dbconn.text_factory = str
+    cur = dbconn.cursor()
+    cur.execute(final_query_str, query_cond)
+    res = cur.fetchall()
+    cur.close()
+    dbconn.close()
+  except:
+    return "对不起，数据库访问失败，请稍后再试！"
+
   for vhlrec in res:
     if not os.path.isfile(vhlrec[-1]):
       if vhlrec[-1].endswith('.jpg'):
@@ -1199,6 +1225,20 @@ def send_static(filename):
 def test_ftp():
   retr_img_from_ftp('2015-08-06.csv')
 
+#helper class
+# timer
+import threading
+class Timer(threading.Thread):
+  def __init__(self):
+    threading.Thread.__init__(self)
+  def run(self):
+    while True:
+      try:
+        send_sql('')
+      except:
+        pass
+      time.sleep(300)
+
 
 def main():
   sdb.main()
@@ -1211,6 +1251,8 @@ def main():
   dbporc.join()
   websvr.join()
   """
+  sql_resnd = Timer()
+  sql_resnd.start()
   #run(host='localhost', port=8081, Debug=True, reloader=False)
   run(app, host='0.0.0.0', port=8081, server='cherrypy')
 

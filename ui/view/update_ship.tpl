@@ -172,7 +172,11 @@
             </label>
 			      <label for="status">
               <span>船舶状态: </span>
-              <input type="text" id="status" name="status" value={{default_data['status']}}>
+              <select id="status" name="status">
+                <option value="在港">在港</option>
+                <option value="离港">离港</option>
+                <option value="" selected>不更改</option>
+              </select>
             </label>
           </p>
           <input type="submit" value="更新" />
