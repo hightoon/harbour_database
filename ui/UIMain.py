@@ -106,29 +106,32 @@ def decode_utf8(tup_lst):
   dec_tup = []
   for t in tup_lst:
     for i in t:
-      dec_tup.append(i.decode('utf8'))
+      dec_tup.append(i.decode('utf8').encode('GBK'))
     decoded.append(tuple(dec_tup))
     dec_tup = []
   return decoded
 
 def send_sql(sql):
-  HOST, PORT = '172.16.0.101', 9998
+  global sqlcmd_buffer_1, sqlcmd_buffer_2
+  HOST, PORT = '127.0.0.1', 9998
   sock1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-  sock1.settimeout(2.0)
+  sock1.settimeout(1.0)
   try:
       sock1.connect((HOST, PORT))
       if sql:
         sock1.sendall('sql:' + sql + "\n")
-      while True:
+      else:
         try:
           sqlcmd = sqlcmd_buffer_1.pop()
-          sock1.sendall('sql:' + sqlcmd + '\n')
-          time.sleep(0.01)
         except:
-          break
+          sqlcmd = ''
+        if sqlcmd:
+          sock1.sendall('sql:' + sqlcmd + '\n')
   except:
       print 'sock1 connect failed'
-      sqlcmd_buffer_1.append(sql)
+      if sql:
+        print 'push data:', sql
+        sqlcmd_buffer_1.append(sql)
   finally:
       sock1.close()
 
@@ -139,16 +142,18 @@ def send_sql(sql):
       sock2.connect((HOST, PORT))
       if sql:
         sock2.sendall('sql:' + sql + "\n")
-      while True:
+      else:
         try:
           sqlcmd = sqlcmd_buffer_2.pop()
-          sock2.sendall('sql:' + sqlcmd + '\n')
-          time.sleep(0.01)
         except:
-          break
+          sqlcmd = ''
+        if sqlcmd:
+          sock2.sendall('sql:' + sqlcmd + '\n')
   except:
       print 'sock2 connect failed'
-      sqlcmd_buffer_2.append(sql)
+      if sql:
+        print 'push data:', sql
+        sqlcmd_buffer_2.append(sql)
   finally:
       sock2.close()
 
@@ -1237,7 +1242,7 @@ class Timer(threading.Thread):
         send_sql('')
       except:
         pass
-      time.sleep(300)
+      time.sleep(5)
 
 
 def main():

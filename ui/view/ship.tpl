@@ -160,10 +160,6 @@
               <span>优检标志: </span>
               <input type="text" id="tjbz" name="tjbz" />
             </label>
-			      <label for="status">
-              <span>船舶状态: </span>
-              <input type="text" id="status" name="status" />
-            </label>
           </p>
           <input type="submit" value="添加" />
         </form>
