@@ -113,7 +113,7 @@ def decode_utf8(tup_lst):
 
 def send_sql(sql):
   global sqlcmd_buffer_1, sqlcmd_buffer_2
-  HOST, PORT = '127.0.0.1', 9998
+  HOST, PORT = '172.16.0.101', 9998
   sock1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   sock1.settimeout(1.0)
   try:
