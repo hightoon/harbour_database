@@ -68,6 +68,7 @@ def retr_img_from_ftp(filename):
   ret = True
   with open(filename, 'wb') as lf:
     for host in hosts:
+      ret = True
       try:
         ftp = FTP(host, timeout=0.5)
         ftp.login(usr, passwd)
@@ -82,9 +83,10 @@ def retr_img_from_ftp(filename):
           ret = False
         finally:
           ftp.quit()
-    if not ret:
-      os.remove(filename)
-    return ret
+      if ret: break
+  if not ret:
+    os.remove(filename)
+  return ret
 
 def get_hosts():
   fd = open('hosts.txt')
