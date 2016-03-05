@@ -133,7 +133,7 @@ def send_sql(sql):
         if sqlcmd:
           sock1.sendall('sql:' + sqlcmd + '\n')
   except:
-      print 'sock1 connect failed'
+      print 'sock1 connect %s failed'%HOST
       if sql:
         print 'push data:', sql
         sqlcmd_buffer_1.append(sql)
@@ -155,7 +155,7 @@ def send_sql(sql):
         if sqlcmd:
           sock2.sendall('sql:' + sqlcmd + '\n')
   except:
-      print 'sock2 connect failed'
+      print 'sock2 connect %s failed'%HOST
       if sql:
         print 'push data:', sql
         sqlcmd_buffer_2.append(sql)
