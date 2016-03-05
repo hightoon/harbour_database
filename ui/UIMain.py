@@ -85,7 +85,10 @@ def retr_img_from_ftp(filename):
           ftp.quit()
       if ret: break
   if not ret:
-    os.remove(filename)
+    try:
+      os.remove(filename)
+    except:
+      pass
   return ret
 
 def get_hosts():
