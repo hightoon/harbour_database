@@ -11,7 +11,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 sys.path.append('..')
 
-import time, urllib2, sqlite3, re, socket, os, csv
+import time, urllib2, sqlite3, re, socket, os, csv, os.path, shutil
 import ServerDbLite as sdb
 import SqlCmdHelper as sch
 import SqlCmdHelper
@@ -89,6 +89,8 @@ def retr_img_from_ftp(filename):
       os.remove(filename)
     except:
       pass
+  else: #move picture to ./pictures
+    shutil.move(filename, './pictures/%s'%filename)
   return ret
 
 def get_hosts():
@@ -1253,6 +1255,9 @@ class Timer(threading.Thread):
 def main():
   sdb.main()
   init_db()
+  #create dir for pics
+  if not os.path.isdir('./pictures'):
+    os.mkdir('./pictures')
   """
   dbporc = Process(target=sdb.run_sock_svr, args=())
   dbporc.start()

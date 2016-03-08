@@ -184,7 +184,7 @@
             %for field in item:
               <td class="nowrap">
                 %if str(field).endswith("jpg") or str(field).endswith("JPG"):
-                  <a href="/static/./{{field}}">点击查看</a>
+                  <a href="/static/pictures/{{field}}">点击查看</a>
                 %else:
                   {{field}}
                 %end
