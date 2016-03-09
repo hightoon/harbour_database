@@ -25,7 +25,15 @@ import UserDb
 
 sqlcmd_buffer_1 = []
 sqlcmd_buffer_2 = []
+sqlcmd_buffer = dict()
 
+def get_clients():
+  with open('clients.txt') as fd:
+    clnts = []
+    for line in fd:
+      if line:
+        clnts.append(line.strip())
+  return clnts
 
 session_opts = {
     'session.type': 'file',
@@ -64,7 +72,7 @@ def set_setting_disp(val):
 
 def retr_img_from_ftp(filename):
   usr, passwd = '111111', '111111'
-  hosts = ['172.16.0.101', '172.16.0.108']
+  hosts = get_clients()
   ret = True
   with open(filename, 'wb') as lf:
     for host in hosts:
@@ -120,6 +128,35 @@ def decode_utf8(tup_lst):
 
 def send_sql(sql):
   global sqlcmd_buffer_1, sqlcmd_buffer_2
+  hosts = get_clients()
+  if hosts:
+    for host in hosts:
+      sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+      sock.settimeout(1.0)
+      HOST, PORT = host, 9998
+      try:
+        sock.connect((HOST, PORT))
+        if sql:
+          sock.sendall('sql:' + sql + "\n")
+        else:
+          try:
+            sqlcmd = sqlcmd_buffer[host].pop()
+          except:
+            sqlcmd = ''
+          if sqlcmd:
+            sock.sendall('sql:' + sqlcmd + '\n')
+      except Exception as e:
+        print 'sock connect %s failed, %s'%(HOST, e)
+        if sql:
+          print 'push data:', sql
+          if sqlcmd_buffer.has_key(host):
+            sqlcmd_buffer[host].append(sql)
+          else:
+            sqlcmd_buffer[host] = [sql]
+      finally:
+        sock.close()
+      
+  '''
   HOST, PORT = '172.16.0.101', 9998
   sock1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   sock1.settimeout(1.0)
@@ -141,7 +178,7 @@ def send_sql(sql):
         sqlcmd_buffer_1.append(sql)
   finally:
       sock1.close()
-
+  
   HOST, PORT = '172.16.0.108', 9998
   sock2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   sock2.settimeout(3.0)
@@ -163,7 +200,7 @@ def send_sql(sql):
         sqlcmd_buffer_2.append(sql)
   finally:
       sock2.close()
-
+  '''
 def convert_table_value(s):
   if s == '':
     return '\'\''
@@ -366,7 +403,7 @@ def query_driver():
     res = arecs
 
   for drvrec in res:
-    if not os.path.isfile(drvrec[-1]):
+    if not os.path.isfile('./pictures/%s'%drvrec[-1]):
       if drvrec[-1].endswith('.jpg'):
         retr_img_from_ftp(drvrec[-1])
 
@@ -433,10 +470,10 @@ def query_vehicle():
     return "对不起，数据库访问失败，请稍后再试！"
 
   for vhlrec in res:
-    if not os.path.isfile(vhlrec[-1]):
+    if not os.path.isfile('./pictures/%s'%vhlrec[-1]):
       if vhlrec[-1].endswith('.jpg'):
         retr_img_from_ftp(vhlrec[-1])
-    if not os.path.isfile(vhlrec[-2]):
+    if not os.path.isfile('./pictures/%s'%vhlrec[-2]):
       if vhlrec[-2].endswith('.jpg'):
         retr_img_from_ftp(vhlrec[-2])
   if request.forms.get('export'):
@@ -1258,6 +1295,8 @@ def main():
   #create dir for pics
   if not os.path.isdir('./pictures'):
     os.mkdir('./pictures')
+  cs = get_clients()
+  print cs
   """
   dbporc = Process(target=sdb.run_sock_svr, args=())
   dbporc.start()
